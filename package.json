@@ -1,0 +1,31 @@
+{
+  "name": "io-game-client",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HusakYurii/io-game-client.git"
+  },
+  "keywords": [],
+  "author": "Yurii Husak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HusakYurii/io-game-client/issues"
+  },
+  "homepage": "https://github.com/HusakYurii/io-game-client#readme",
+  "dependencies": {
+    "@pixi/app": "^5.2.1",
+    "@pixi/constants": "^5.2.1",
+    "@pixi/core": "^5.2.1",
+    "@pixi/display": "^5.2.1",
+    "@pixi/interaction": "^5.2.1",
+    "@pixi/loaders": "^5.2.1",
+    "@pixi/math": "^5.2.1",
+    "@pixi/runner": "^5.2.1",
+    "@pixi/settings": "^5.2.1",
+    "@pixi/sprite": "^5.2.1",
+    "@pixi/ticker": "^5.2.1",
+    "@pixi/utils": "^5.2.1"
+  }
+}
