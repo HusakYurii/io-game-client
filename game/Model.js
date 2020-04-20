@@ -1,3 +1,7 @@
 export class Model {
-    constructor() { }
+    constructor(gameConfig) {
+        this.gameConfig = gameConfig;
+        this.playerId = "";
+        this.roomId = "";
+    }
 }
