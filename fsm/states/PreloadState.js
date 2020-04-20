@@ -1,4 +1,5 @@
 import { AbstractState } from "./AbstractState.js";
+import { callAfter } from "../../../shared/Tools.js";
 
 export class PreloadState extends AbstractState {
 
@@ -9,7 +10,17 @@ export class PreloadState extends AbstractState {
         super("PreloadState", stateMachine);
     }
 
-    onEnterState() { }
+    onEnterState() {
+        const { target } = this.stateMachine;
+        const onLoaded = callAfter(2, this.onAllLoaded, [], this);
+        target.loadGameAssets(onLoaded);
+        target.connectUser(onLoaded);
+    }
+
+    onAllLoaded() {
+        console.log("Aseets loaded and user connected");
+        this.goToNextState("LoginState");
+    }
 
     /**
      * @param {function} callback 
