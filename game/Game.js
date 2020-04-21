@@ -12,19 +12,35 @@ export class Game extends Application {
     }
 
     init() {
-        this.controller.addSocket(io);
+        this.controller.setSocket(io);
 
         this.stage.addChild(this.controller.view);
         document.body.appendChild(this.view);
     }
 
+    setViewLayers(layers) {
+        this.controller.setViewLayers(layers);
+    }
+
     loadGameAssets(callback) {
-        const { gameConfig: { assets } } = this.controller.model;
-        this.loader.add(assets);
-        this.loader.load(callback);
+        const { gameConfig } = this.controller.model;
+
+        this.loader.add(gameConfig.assets);
+        this.loader.add(gameConfig.spritesheets);
+
+        this.loader.load(this.onAssetsLoaded.bind(this, callback));
+    }
+
+    onAssetsLoaded(callback, loader, resources) {
+        this.controller.setViewResources(resources);
+        callback();
     }
 
     connectUser(callback) {
         this.controller.connectUser(callback);
+    }
+
+    createLoginPopup() {
+        this.controller.createLoginPopup();
     }
 }
