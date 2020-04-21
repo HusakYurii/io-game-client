@@ -4,5 +4,8 @@ export const gameConfig = {
     assets: [
         { name: 'icon-1', url: './assets/icon-1.png' },
         { name: 'icon-2', url: './assets/icon-2.png' }
+    ],
+    spritesheets: [
+        { name: 'world-tiles', url: './assets/spritesheets/world-tiles.json' }
     ]
 };
