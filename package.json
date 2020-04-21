@@ -25,6 +25,9 @@
     "@pixi/runner": "^5.2.1",
     "@pixi/settings": "^5.2.1",
     "@pixi/sprite": "^5.2.1",
+    "@pixi/sprite-animated": "^5.2.1",
+    "@pixi/spritesheet": "^5.2.1",
+    "@pixi/text": "^5.2.1",
     "@pixi/ticker": "^5.2.1",
     "@pixi/utils": "^5.2.1"
   }
