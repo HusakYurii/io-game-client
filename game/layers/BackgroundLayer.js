@@ -1,9 +1,16 @@
 import { Container } from "../../libs/PixiCustomized.js";
 
 export class BackgroundLayer extends Container {
-    constructor(index) {
+    constructor(config) {
         super();
-        this.layerName = "BackgroundLayer";
-        this.zIndex = index;
+        this.name = config.layerName;
+        this.zIndex = config.layerIndex;
+        this.config = config;
+
+        this.viewTextures = {};
+    }
+
+    setTextures(textures) {
+        this.viewTextures = textures;
     }
 }
