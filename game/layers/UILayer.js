@@ -15,4 +15,26 @@ export class UILayer extends Container {
     setTextures(textures) {
         this.viewTextures = textures;
     }
+
+    createLoginPopup(callback) {
+
+        this.nickNameInput = document.createElement("input");
+        document.body.appendChild(this.nickNameInput);
+
+        this.roomInput = document.createElement("input");
+        document.body.appendChild(this.roomInput);
+
+        const popup = Builder.fromConfig(this.config.loginPopupTree);
+        this.addChild(...popup);
+
+        const button = this.getChildByName("button");
+        button.interactive = true;
+        button.once("pointerdown", (event) => {
+            event.stopPropagation();
+            callback({
+                name: this.nickNameInput.value,
+                roomId: this.roomInput.value
+            });
+        });
+    }
 }
