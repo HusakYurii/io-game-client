@@ -12,7 +12,7 @@ export class Game extends Application {
     }
 
     init() {
-        this.controller.setSocket(io);
+        this.controller.initSocket(io);
 
         this.stage.addChild(this.controller.view);
         document.body.appendChild(this.view);
@@ -36,11 +36,15 @@ export class Game extends Application {
         callback();
     }
 
+    loginUser(data, callback) {
+        this.controller.loginUser(data, callback);
+    }
+
     connectUser(callback) {
         this.controller.connectUser(callback);
     }
 
-    createLoginPopup() {
-        this.controller.createLoginPopup();
+    createLoginPopup(callback) {
+        this.controller.createLoginPopup(callback);
     }
 }

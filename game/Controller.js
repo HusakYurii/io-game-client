@@ -36,8 +36,24 @@ export class Controller {
         this.view.setLaters(layers);
     }
 
-    setSocket(socket) {
+    initSocket(socket) {
         this.socket = socket(this.model.gameConfig.ioUrl);
+    }
+
+    loginUser(data, callback) {
+        const playload = {
+            id: this.model.playerId,
+            ...data
+        };
+
+        this.socket.emit("login-user", JSON.stringify(playload));
+        this.socket.on("user-loggedin", this.onUserLoggedin.bind(this, callback));
+    }
+
+    onUserLoggedin(callback, payload) {
+        const parsed = JSON.parse(payload);
+        this.model.roomId = parsed.roomId;
+        callback();
     }
 
     connectUser(callback) {
@@ -51,7 +67,7 @@ export class Controller {
         callback();
     }
 
-    createLoginPopup() {
-        this.view.createLoginPopup();
+    createLoginPopup(callback) {
+        this.view.createLoginPopup(callback);
     }
 }

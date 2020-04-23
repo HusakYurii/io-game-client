@@ -12,7 +12,10 @@ export class View extends Container {
      * @param {{[key: string]: Texture}[]} textures 
      */
     setTextures(textures) {
-        this.viewTextures = textures;
+        Object.values(this.viewLayers)
+            .forEach((layer) => {
+                layer.setTextures(textures);
+            });
     }
 
     /**
@@ -20,7 +23,7 @@ export class View extends Container {
      */
     setLaters(layers) {
         layers.forEach((layer) => {
-            this.viewLayers[layer.layerName] = layer;
+            this.viewLayers[layer.name] = layer;
             this.addChild(layer);
         });
     }
@@ -29,5 +32,8 @@ export class View extends Container {
         return this.viewLayers[layerName];
     }
 
-    createLoginPopup() { }
+    createLoginPopup(callback) {
+        const uiLayer = this.getLayerByName("UILayer");
+        uiLayer.createLoginPopup(callback);
+    }
 }
