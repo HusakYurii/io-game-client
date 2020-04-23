@@ -1,15 +1,17 @@
 import { Game, Controller, Model, View } from "./game"
 import { gameConfig } from "./configs";
 
-const game = new Game({}, new Controller(new Model(gameConfig), new View()));
+const { application } = gameConfig;
+const game = new Game(application, new Controller(new Model(gameConfig), new View()));
 
+import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig} from "./configs";
 import { BackgroundLayer, ControlLayer, GameLayer, UILayer } from "./game/layers";
 
 game.setViewLayers([
-    new BackgroundLayer(0),
-    new GameLayer(1),
-    new ControlLayer(2),
-    new UILayer(3)
+    new BackgroundLayer(backgroundLayerConfig),
+    new GameLayer(gameLayerConfig),
+    new ControlLayer(controlLayerConfig),
+    new UILayer(uiLayerConfig)
 ]);
 
 import { StateMachine, GamePausedState, GameOverState, PreloadState, LoginState, GameState } from "./fsm";
