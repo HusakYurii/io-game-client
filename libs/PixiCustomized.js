@@ -35,6 +35,9 @@ import { Loader } from '@pixi/loaders';
 import { SpritesheetLoader } from '@pixi/spritesheet';
 Loader.registerPlugin(SpritesheetLoader);
 
+// Import my features
+import '../features/DisplayObject.js';
+
 export {
     Application
 }
