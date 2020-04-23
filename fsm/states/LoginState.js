@@ -9,7 +9,20 @@ export class LoginState extends AbstractState {
         super("LoginState", stateMachine);
     }
 
-    onEnterState() { }
+    onEnterState() {
+        const { target } = this.stateMachine;
+
+        target.createLoginPopup(this.onUserInput.bind(this));
+    }
+
+    onUserInput(data) {
+        const { target } = this.stateMachine;
+        target.loginUser(data, this.onUserLoggedin.bind(this));
+    }
+
+    onUserLoggedin() {
+        
+    }
 
     /**
      * @param {function} callback 
