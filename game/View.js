@@ -28,6 +28,12 @@ export class View extends Container {
         });
     }
 
+    resize(sizes) {
+        const {scl,  windowSize } = sizes;
+        this.position.set(windowSize.width / 2, windowSize.height / 2);
+        this.scale.set(scl);
+    }
+
     getLayerByName(layerName) {
         return this.viewLayers[layerName];
     }

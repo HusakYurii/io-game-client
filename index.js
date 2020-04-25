@@ -4,7 +4,10 @@ import { gameConfig } from "./configs";
 const { application } = gameConfig;
 const game = new Game(application, new Controller(new Model(gameConfig), new View()));
 
-import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig} from "./configs";
+import { ResizeManager } from "./libs/ResizeManager.js";
+const resizeManager = new ResizeManager(game, application);
+
+import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig } from "./configs";
 import { BackgroundLayer, ControlLayer, GameLayer, UILayer } from "./game/layers";
 
 game.setViewLayers([
@@ -26,7 +29,7 @@ fsm.registrStates([
 ]);
 
 game.init();
-
+resizeManager.resizeView();
 fsm.changeStateTo("PreloadState");
 
 if (gameConfig.isDebuggerMode) {

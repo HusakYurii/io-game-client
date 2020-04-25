@@ -1,10 +1,11 @@
 export const gameConfig = {
     isDebuggerMode: true,
     application: {
-        width: 1000,
+        autoDensity: true,
+        width: 900,
         height: 600
     },
-    ioUrl: 'http://localhost:9090',
+    ioUrl: 'http://192.168.168.101:9090',
     assets: [
         { name: 'loginFormBackground', url: './assets/loginFormBackground.png' },
         { name: 'loginFormButton', url: './assets/loginFormButton.png' },
