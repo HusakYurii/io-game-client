@@ -1,4 +1,5 @@
 import { Container } from "../../libs/PixiCustomized.js";
+import { Builder } from "../../libs/Builder.js";
 
 export class UILayer extends Container {
     constructor(config) {
