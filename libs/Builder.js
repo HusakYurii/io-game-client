@@ -57,8 +57,8 @@ export class Builder {
      */
     static _useModifiers(target, modifiers = {}) {
         const filtered = [
-            "position", "anchor", "scale",
-            "alpha", "zIndex", "rotation"
+            "position", "anchor", "scale", "width",
+            "alpha", "zIndex", "rotation", "height"
         ].filter((prop) => Boolean(modifiers[prop]));
 
         filtered.forEach((prop) => {
