@@ -36,6 +36,15 @@ export class Controller {
         this.view.setLaters(layers);
     }
 
+    createLoginPopup(callback) {
+        this.view.createLoginPopup(callback);
+    }
+
+    createGameBackground() {
+        this.view.createGameBackground();
+    }
+
+    // ============== connection ===============
     initSocket(socket) {
         this.socket = socket(this.model.gameConfig.ioUrl);
     }
@@ -65,9 +74,5 @@ export class Controller {
         const parsed = JSON.parse(payload);
         this.model.playerId = parsed.id;
         callback();
-    }
-
-    createLoginPopup(callback) {
-        this.view.createLoginPopup(callback);
     }
 }

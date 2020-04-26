@@ -38,6 +38,11 @@ export class View extends Container {
         return this.viewLayers[layerName];
     }
 
+    createGameBackground() {
+        const bgLayer = this.getLayerByName("BackgroundLayer");
+        bgLayer.createBackground();
+    }
+
     createLoginPopup(callback) {
         const uiLayer = this.getLayerByName("UILayer");
         uiLayer.createLoginPopup(callback);

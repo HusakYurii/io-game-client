@@ -36,6 +36,7 @@ export class Game extends Application {
         callback();
     }
 
+    // ============== connection ===============
     loginUser(data, callback) {
         this.controller.loginUser(data, callback);
     }
@@ -44,7 +45,12 @@ export class Game extends Application {
         this.controller.connectUser(callback);
     }
 
+    // ============== connection ===============
     createLoginPopup(callback) {
         this.controller.createLoginPopup(callback);
+    }
+
+    createGameBackground() {
+        this.controller.createGameBackground();
     }
 }

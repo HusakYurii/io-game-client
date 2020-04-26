@@ -12,6 +12,7 @@ export class LoginState extends AbstractState {
     onEnterState() {
         const { target } = this.stateMachine;
 
+        target.createGameBackground();
         target.createLoginPopup(this.onUserInput.bind(this));
     }
 
@@ -21,7 +22,7 @@ export class LoginState extends AbstractState {
     }
 
     onUserLoggedin() {
-        
+        this.goToNextState("ShowAdsState");
     }
 
     /**

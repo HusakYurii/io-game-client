@@ -10,6 +10,7 @@ export const gameConfig = {
         { name: 'loginFormBackground', url: './assets/loginFormBackground.png' },
         { name: 'loginFormButton', url: './assets/loginFormButton.png' },
         { name: 'loginFormStrip', url: './assets/loginFormStrip.png' },
+        { name: 'background', url: './assets/background.png' },
         { name: 'player', url: './assets/player.png' },
         { name: 'other', url: './assets/other.png' }
     ],
