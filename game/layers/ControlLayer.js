@@ -1,16 +1,8 @@
-import { Container } from "../../libs/PixiCustomized.js";
+import { AbstractLayer } from "./AbstractLayer.js";
 
-export class ControlLayer extends Container {
+export class ControlLayer extends AbstractLayer {
     constructor(config) {
-        super();
-        this.name = config.layerName;
-        this.zIndex = config.layerIndex;
-        this.config = config;
+        super(config);
 
-        this.viewTextures = {};
-    }
-
-    setTextures(textures) {
-        this.viewTextures = textures;
     }
 }

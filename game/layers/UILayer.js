@@ -1,29 +1,19 @@
-import { Container } from "../../libs/PixiCustomized.js";
+import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
 
-export class UILayer extends Container {
+export class UILayer extends AbstractLayer {
     constructor(config) {
-        super();
-        this.name = config.layerName;
-        this.zIndex = config.layerIndex;
-        this.config = config;
-
-        this.viewTextures = {};
-        this.nickNameInput = {};
-        this.roomInput = {};
-    }
-
-    setTextures(textures) {
-        this.viewTextures = textures;
+        super(config);
+        this.inputs = {};
     }
 
     createLoginPopup(callback) {
 
-        this.nickNameInput = document.createElement("input");
-        document.body.appendChild(this.nickNameInput);
+        this.inputs.nickNameInput = document.createElement("input");
+        document.body.appendChild(this.inputs.nickNameInput);
 
-        this.roomInput = document.createElement("input");
-        document.body.appendChild(this.roomInput);
+        // this.inputs.roomInput = document.createElement("input");
+        // document.body.appendChild(this.inputs.roomInput);
 
         const popup = Builder.fromConfig(this.config.loginPopupTree);
         this.addChild(...popup);
@@ -33,8 +23,9 @@ export class UILayer extends Container {
         button.once("pointerdown", (event) => {
             event.stopPropagation();
             callback({
-                name: this.nickNameInput.value,
-                roomId: this.roomInput.value
+                name: this.inputs.nickNameInput.value,
+                roomId: ""
+                // roomId: this.inputs.roomInput.value
             });
         });
     }

@@ -1,16 +1,12 @@
-import { Container } from "../../libs/PixiCustomized.js";
+import { AbstractLayer } from "./AbstractLayer.js";
+import { Builder } from "../../libs/Builder.js";
 
-export class GameLayer extends Container {
+export class GameLayer extends AbstractLayer {
     constructor(config) {
-        super();
-        this.name = config.layerName;
-        this.zIndex = config.layerIndex;
-        this.config = config;
-
-        this.viewTextures = {};
+        super(config);
     }
 
-    setTextures(textures) {
-        this.viewTextures = textures;
+    createBackground() {
+        // const 
     }
 }
