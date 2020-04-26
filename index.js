@@ -17,12 +17,13 @@ game.setViewLayers([
     new UILayer(uiLayerConfig)
 ]);
 
-import { StateMachine, GamePausedState, GameOverState, PreloadState, LoginState, GameState } from "./fsm";
+import { StateMachine, GamePausedState, GameOverState, PreloadState, LoginState, GameState, ShowAdsState } from "./fsm";
 
 const fsm = new StateMachine(game);
 fsm.registrStates([
     new PreloadState(fsm),
     new LoginState(fsm),
+    new ShowAdsState(fsm),
     new GameState(fsm),
     new GamePausedState(fsm),
     new GameOverState(fsm)

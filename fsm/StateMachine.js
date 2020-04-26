@@ -51,7 +51,7 @@ export class StateMachine {
 
     static log(currState, previousState) {
         console.log(`%c State was change!
-            current state: ${currState && currState.name}
-            previous state: ${previousState && previousState.name}`, 'color: white; background: black; font-size: 15px');
+            previous state: ${previousState && previousState.name}
+            current state: ${currState && currState.name}`, 'color: white; background: black; font-size: 15px');
     }
 }

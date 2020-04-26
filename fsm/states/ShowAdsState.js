@@ -1,6 +1,6 @@
 import { AbstractState } from "./AbstractState.js";
 
-export class PreloadState extends AbstractState {
+export class ShowAdsState extends AbstractState {
 
     /**
      * @param {StateMachine} stateMachine 
@@ -10,6 +10,10 @@ export class PreloadState extends AbstractState {
     }
 
     onEnterState() {
+        window.setTimeout(this.onAdsWatched.bind(this), 500);
+    }
+
+    onAdsWatched() {
         this.goToNextState("GameState");
     }
 
