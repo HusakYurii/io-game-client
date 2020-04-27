@@ -29,9 +29,11 @@ export class View extends Container {
     }
 
     resize(sizes) {
-        const {scl,  windowSize } = sizes;
+        const { scl, windowSize } = sizes;
         this.position.set(windowSize.width / 2, windowSize.height / 2);
         this.scale.set(scl);
+        Object.values(this.viewLayers)
+            .forEach((layer) => layer.resize(sizes));
     }
 
     getLayerByName(layerName) {
@@ -39,12 +41,14 @@ export class View extends Container {
     }
 
     createGameBackground() {
-        const bgLayer = this.getLayerByName("BackgroundLayer");
-        bgLayer.createBackground();
+        this.getLayerByName("BackgroundLayer").createBackground();
     }
 
     createLoginPopup(callback) {
-        const uiLayer = this.getLayerByName("UILayer");
-        uiLayer.createLoginPopup(callback);
+        this.getLayerByName("UILayer").createLoginPopup(callback);
+    }
+
+    removeLoginPopup() {
+        this.getLayerByName("UILayer").removeLoginPopup();
     }
 }

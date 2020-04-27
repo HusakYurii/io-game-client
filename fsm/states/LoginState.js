@@ -10,15 +10,12 @@ export class LoginState extends AbstractState {
     }
 
     onEnterState() {
-        const { target } = this.stateMachine;
-
-        target.createGameBackground();
-        target.createLoginPopup(this.onUserInput.bind(this));
+        this.stateMachine.target.createGameBackground();
+        this.stateMachine.target.createLoginPopup(this.onUserInput.bind(this));
     }
 
     onUserInput(data) {
-        const { target } = this.stateMachine;
-        target.loginUser(data, this.onUserLoggedin.bind(this));
+        this.stateMachine.target.loginUser(data, this.onUserLoggedin.bind(this));
     }
 
     onUserLoggedin() {
@@ -29,6 +26,7 @@ export class LoginState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
+        this.stateMachine.target.removeLoginPopup();
         callback();
     }
 }

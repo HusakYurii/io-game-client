@@ -49,6 +49,9 @@ export class Game extends Application {
     createLoginPopup(callback) {
         this.controller.createLoginPopup(callback);
     }
+    removeLoginPopup() {
+        this.controller.removeLoginPopup();
+    }
 
     createGameBackground() {
         this.controller.createGameBackground();

@@ -40,6 +40,10 @@ export class Controller {
         this.view.createLoginPopup(callback);
     }
 
+    removeLoginPopup() {
+        this.view.removeLoginPopup();
+    }
+
     createGameBackground() {
         this.view.createGameBackground();
     }
