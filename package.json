@@ -19,6 +19,7 @@
     "@pixi/constants": "^5.2.1",
     "@pixi/core": "^5.2.1",
     "@pixi/display": "^5.2.1",
+    "@pixi/graphics": "^5.2.1",
     "@pixi/interaction": "^5.2.1",
     "@pixi/loaders": "^5.2.1",
     "@pixi/math": "^5.2.1",
@@ -29,6 +30,7 @@
     "@pixi/spritesheet": "^5.2.1",
     "@pixi/text": "^5.2.1",
     "@pixi/ticker": "^5.2.1",
-    "@pixi/utils": "^5.2.1"
+    "@pixi/utils": "^5.2.1",
+    "pixi-text-input": "^1.0.5"
   }
 }
