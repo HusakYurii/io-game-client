@@ -1,8 +1,10 @@
 import { Container, Sprite, Text, TextStyle } from "./PixiCustomized.js";
+import TextInput from "pixi-text-input";
 
 export class Builder {
 
     /**
+     * @static
      * @param {object[]} treeConfig 
      * @returns {DisplayObject[]} - nested pixi DisplayObject
      */
@@ -18,6 +20,7 @@ export class Builder {
     }
 
     /**
+     * @static
      * @param {{modifiers:object; name: string;}} param0
      * @returns {Container}
      */
@@ -29,10 +32,11 @@ export class Builder {
     }
 
     /**
+     * @static
      * @param {{pictureName:string; modifiers:object; name: string;}} param0 
      * @returns {Sprite}
      */
-    static createSprite({ pictureName, modifiers, name  } = {}) {
+    static createSprite({ pictureName, modifiers, name } = {}) {
         const sprite = Builder.Sprite.from(pictureName);
         this._useModifiers(sprite, modifiers);
         sprite.name = name;
@@ -40,10 +44,11 @@ export class Builder {
     }
 
     /**
+     * @static
      * @param {{text:string; style:object; modifiers:object; name: string;}} param0 
      * @returns {Text}
      */
-    static createText({ text = "", style = {}, modifiers, name  } = {}) {
+    static createText({ text = "", style = {}, modifiers, name } = {}) {
         const txt = new Builder.Text(text, new Builder.TextStyle(style));
         this._useModifiers(txt, modifiers);
         txt.name = name;
@@ -51,15 +56,25 @@ export class Builder {
     }
 
     /**
+     * @static
+     * @param {{input: object; box: object, modifiers: object; name: string;}} param0 
+     * @returns {TextInput}
+     */
+    static createTextInput({ input = {}, box = {}, modifiers = {}, name } = {}) {
+        const textInput = new Builder.TextInput({ input, box });
+        this._useModifiers(textInput, modifiers);
+        textInput.name = name;
+        return textInput;
+    }
+
+    /**
      * @private
+     * @static
      * @param {DisplayObject} target 
      * @param {object} modifiers 
      */
     static _useModifiers(target, modifiers = {}) {
-        const filtered = [
-            "position", "anchor", "scale", "width",
-            "alpha", "zIndex", "rotation", "height"
-        ].filter((prop) => Boolean(modifiers[prop]));
+        const filtered = Builder.modifiersList.filter((prop) => Boolean(modifiers[prop]));
 
         filtered.forEach((prop) => {
             this._modify(target, prop, modifiers[prop]);
@@ -68,6 +83,7 @@ export class Builder {
 
     /**
      * @private
+     * @static
      * @param {DisplayObject} target 
      * @param {string} property 
      * @param {any} modifier 
@@ -89,6 +105,10 @@ export class Builder {
         return Sprite;
     }
 
+    static get TextInput() {
+        return TextInput;
+    }
+
     static get TextStyle() {
         return TextStyle;
     }
@@ -99,7 +119,18 @@ export class Builder {
 }
 
 Builder.methodsMap = {
+    "TextInput": "createTextInput",
     "Container": "createContainer",
     "Sprite": "createSprite",
     "Text": "createText"
 };
+
+Builder.modifiersList = [
+    // basic DisplayObject props
+    "position", "scale", "width", "height",
+    "alpha", "zIndex", "rotation",
+    // for Sprite 
+    "anchor",
+    // for TextInput
+    "placeholder", "restrict", "maxLength"
+]
