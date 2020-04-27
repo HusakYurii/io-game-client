@@ -10,60 +10,58 @@ export const uiLayerConfig = {
                 name: "background",
                 pictureName: "loginFormBackground",
                 modifiers: {
-                    anchor: { x: 0.5, y: 0.5 }
+                    anchor: { x: 0.5, y: 0.5 },
+                    width: 600
                 }
             },
             {
-                type: "Sprite",
-                name: "nickNameInputStripe",
-                pictureName: "loginFormStrip",
+                type: "TextInput",
+                name: "nameInput",
                 modifiers: {
-                    position: { x: 0, y: -80 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
-            },
-            {
-                type: "Sprite",
-                name: "roomInputStripe",
-                pictureName: "loginFormStrip",
-                modifiers: {
-                    position: { x: 0, y: -10 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
-            },
-            {
-                type: "Text",
-                name: "nickNameInputText",
-                text: "Your nickname:",
-                style: {
-                    fill: "#1b46de",
-                    fontSize: 40,
-                    fontWeight: "bold"
+                    position: { x: -200, y: -140},
+                    placeholder: "Your Name...",
+                    restrict:"a-zA-z_-",
+                    maxLength: 10
                 },
-                modifiers: {
-                    position: { x: -150, y: -110 },
-                    anchor: { x: 0.5, y: 0.5 }
+                input: {
+                    fontSize: '36px',
+                    padding: '12px',
+                    width: '400px',
+                    color: '#26272E'
+                },
+                box: {
+                    default: { fill: 0xE8E9F3, rounded: 12, stroke: { color: 0xCBCEE0, width: 3 } },
+                    focused: { fill: 0xE1E3EE, rounded: 12, stroke: { color: 0xABAFC6, width: 3 } },
+                    disabled: { fill: 0xDBDBDB, rounded: 12 }
                 }
             },
             {
-                type: "Text",
-                name: "roomInputText",
-                text: "Room id:",
-                style: {
-                    fill: "#1b46de",
-                    fontSize: 40,
-                    fontWeight: "bold"
-                },
+                type: "TextInput",
+                name: "roomIdInput",
                 modifiers: {
-                    position: { x: -90, y: -40 },
-                    anchor: { x: 0.5, y: 0.5 }
+                    position: { x: -200, y: -40},
+                    placeholder: "Room id to join to...",
+                    restrict:"0-9a-zA-z_-",
+                    maxLength: 10
+                },
+                input: {
+                    fontSize: '36px',
+                    padding: '12px',
+                    width: '400px',
+                    color: '#26272E'
+                },
+                box: {
+                    default: { fill: 0xE8E9F3, rounded: 12, stroke: { color: 0xCBCEE0, width: 3 } },
+                    focused: { fill: 0xE1E3EE, rounded: 12, stroke: { color: 0xABAFC6, width: 3 } },
+                    disabled: { fill: 0xDBDBDB, rounded: 12 }
                 }
             },
             {
                 type: "Container",
                 name: "button",
                 modifiers: {
-                    position: { x: 0, y: 80 }
+                    position: { x: 0, y: 120 },
+                    alpha: 0.7
                 },
                 children: [
                     {
