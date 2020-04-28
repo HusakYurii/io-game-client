@@ -51,4 +51,8 @@ export class View extends Container {
     removeLoginPopup() {
         this.getLayerByName("UILayer").removeLoginPopup();
     }
+
+    updateGameLayer(gameModel) {
+        this.getLayerByName("GameLayer").updateGame(gameModel);
+    }
 }

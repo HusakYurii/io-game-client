@@ -8,6 +8,8 @@ export class Controller {
         this.model = model;
         this.view = view;
         this.socket = {};
+
+        this.update = this.update.bind(this);
     }
 
     /**
@@ -48,9 +50,22 @@ export class Controller {
         this.view.createGameBackground();
     }
 
+    update(dt) {
+        this.view.updateGameLayer(this.model);
+    }
+
     // ============== connection ===============
     initSocket(socket) {
         this.socket = socket(this.model.gameConfig.ioUrl);
+    }
+
+    setUpdatesConnection() {
+        this.socket.on('server-updates', this.onServerUpdates.bind(this));
+    }
+
+    onServerUpdates(payload) {
+        const parsed = JSON.parse(payload);
+        this.model.setServerUpdates(parsed);
     }
 
     loginUser(data, callback) {
@@ -65,7 +80,7 @@ export class Controller {
 
     onUserLoggedin(callback, payload) {
         const parsed = JSON.parse(payload);
-        this.model.roomId = parsed.roomId;
+        this.model.updateUserData(parsed);
         callback();
     }
 
@@ -76,7 +91,7 @@ export class Controller {
 
     onUserConnected(callback, payload) {
         const parsed = JSON.parse(payload);
-        this.model.playerId = parsed.id;
+        this.model.updateUserData(parsed);
         callback();
     }
 }

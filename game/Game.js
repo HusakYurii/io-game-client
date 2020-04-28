@@ -45,15 +45,24 @@ export class Game extends Application {
         this.controller.connectUser(callback);
     }
 
+    setUpdatesConnection() {
+        this.controller.setUpdatesConnection();
+    }
+
     // ============== connection ===============
     createLoginPopup(callback) {
         this.controller.createLoginPopup(callback);
     }
+
     removeLoginPopup() {
         this.controller.removeLoginPopup();
     }
 
     createGameBackground() {
         this.controller.createGameBackground();
+    }
+
+    startGameLoop() {
+        this.ticker.add(this.controller.update)
     }
 }

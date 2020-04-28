@@ -9,7 +9,9 @@ export class GameState extends AbstractState {
         super("GameState", stateMachine);
     }
 
-    onEnterState() { }
+    onEnterState() {
+        this.stateMachine.target.startGameLoop();
+    }
 
     /**
      * @param {function} callback 
