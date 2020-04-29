@@ -10,7 +10,9 @@ export class GameState extends AbstractState {
     }
 
     onEnterState() {
+        this.stateMachine.target.setUpdatesConnection();
         this.stateMachine.target.startGameLoop();
+        this.stateMachine.target.turnOnControls();
     }
 
     /**

@@ -26,7 +26,6 @@ export class LoginState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
-        this.stateMachine.target.setUpdatesConnection();
         this.stateMachine.target.removeLoginPopup();
         callback();
     }
