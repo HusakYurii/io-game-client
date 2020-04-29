@@ -5,7 +5,13 @@ export class Model {
         this.roomId = "";
         this.name = "";
 
-        this.serverUpdates = {};
+        this.gameStartTime = 0;
+
+        this.serverUpdates = [];
+    }
+
+    updateGameStartTime() {
+        this.gameStartTime = Date.now();
     }
 
     updateUserData({ id, roomId, name } = {}) {
@@ -15,10 +21,10 @@ export class Model {
     }
 
     setServerUpdates(data) {
-        this.serverUpdates = data;
+        this.serverUpdates.push(data);
     }
 
     getServerUpdates() {
-        return this.serverUpdates;
+        return this.serverUpdates.shift();
     }
 }

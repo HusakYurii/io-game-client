@@ -61,6 +61,10 @@ export class Game extends Application {
     createGameBackground() {
         this.controller.createGameBackground();
     }
+    
+    turnOnControls() {
+        this.controller.turnOnControls();
+    }
 
     startGameLoop() {
         this.ticker.add(this.controller.update)

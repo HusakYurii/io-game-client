@@ -10,6 +10,8 @@ export class Controller {
         this.socket = {};
 
         this.update = this.update.bind(this);
+        this.onPlayerMove = this.onPlayerMove.bind(this);
+        this.onPlayerClick = this.onPlayerClick.bind(this);
     }
 
     /**
@@ -50,6 +52,20 @@ export class Controller {
         this.view.createGameBackground();
     }
 
+    turnOnControls() {
+        this.view.turnOnControls(this.onPlayerMove, this.onPlayerClick);
+    }
+
+    onPlayerMove(data) {
+        const { playerId, roomId } = this.model;
+        const { x, y } = data.data.global;
+        this.socket.emit("user-updates", JSON.stringify({ playerId, roomId, x, y }));
+    }
+
+    onPlayerClick(data) {
+        console.log("click");
+    }
+
     update(dt) {
         this.view.updateGameLayer(this.model);
     }
@@ -60,6 +76,7 @@ export class Controller {
     }
 
     setUpdatesConnection() {
+        this.model.updateGameStartTime();
         this.socket.on('server-updates', this.onServerUpdates.bind(this));
     }
 
