@@ -5,4 +5,10 @@ export class ControlLayer extends AbstractLayer {
         super(config);
 
     }
+
+    setControls(onMove, onActivate) {
+        this.interactive = true;
+        this.on("mousemove", onMove);
+        this.on("click", onActivate);
+    }
 }
