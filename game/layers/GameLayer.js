@@ -69,6 +69,7 @@ export class GameLayer extends AbstractLayer {
     static createSprite(config, data) {
         const sprite = Builder.createSprite(config);
         sprite.position.set(data.x, data.y);
+        sprite.scale.set(0.5,0.5);
         sprite.width = sprite.height = (data.r * 2);
         return sprite;
     }

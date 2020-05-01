@@ -36,6 +36,11 @@ export class Controller {
         this.view.setTextures(textures);
     }
 
+    onResize(data) {
+        this.model.updateViewportSizes(data);
+        this.view.resize(data);
+    }
+
     setViewLayers(layers) {
         this.view.setLaters(layers);
     }
@@ -57,9 +62,9 @@ export class Controller {
     }
 
     onPlayerMove(data) {
-        const { playerId, roomId } = this.model;
-        const { x, y } = data.data.global;
-        this.socket.emit("user-updates", JSON.stringify({ playerId, roomId, x, y }));
+        const { playerId, roomId } = this.model.getUserData();
+        const { x, y } = data.data.getLocalPosition(this.view);
+        this.sendUserUpdates({playerId, roomId, x, y});
     }
 
     onPlayerClick(data) {
@@ -72,7 +77,7 @@ export class Controller {
 
     // ============== connection ===============
     initSocket(socket) {
-        this.socket = socket(this.model.gameConfig.ioUrl);
+        this.socket = socket(this.model.getServerUrl());
     }
 
     setUpdatesConnection() {
@@ -80,16 +85,27 @@ export class Controller {
         this.socket.on('server-updates', this.onServerUpdates.bind(this));
     }
 
+    sendUserUpdates(data) {
+        this.socket.emit("user-updates", JSON.stringify(data));
+    }
+
     onServerUpdates(payload) {
         const parsed = JSON.parse(payload);
+
+        const { playerId } = this.model.getUserData();
+
+        const playerUpdates = parsed.players.toUpdate
+            .find((data) => data.id === playerId);
+
+        this.model.updateUserPos(playerUpdates);
         this.model.setServerUpdates(parsed);
     }
 
+
     loginUser(data, callback) {
-        const playload = {
-            id: this.model.playerId,
-            ...data
-        };
+        const { playerId } = this.model.getUserData();
+
+        const playload = { id: playerId, ...data };
 
         this.socket.emit("login-user", JSON.stringify(playload));
         this.socket.on("user-loggedin", this.onUserLoggedin.bind(this, callback));

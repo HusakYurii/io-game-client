@@ -29,8 +29,8 @@ export class View extends Container {
     }
 
     resize(sizes) {
-        const { scl, windowSize } = sizes;
-        this.position.set(windowSize.width / 2, windowSize.height / 2);
+        const { scl, width, height } = sizes;
+        this.position.set(width / 2, height / 2);
         this.scale.set(scl);
         Object.values(this.viewLayers)
             .forEach((layer) => layer.resize(sizes));

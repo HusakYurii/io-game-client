@@ -36,6 +36,11 @@ export class Game extends Application {
         callback();
     }
 
+    onResize(data) {
+        this.renderer.resize(data.width, data.height);
+        this.controller.onResize(data);
+    }
+
     // ============== connection ===============
     loginUser(data, callback) {
         this.controller.loginUser(data, callback);
@@ -61,7 +66,7 @@ export class Game extends Application {
     createGameBackground() {
         this.controller.createGameBackground();
     }
-    
+
     turnOnControls() {
         this.controller.turnOnControls();
     }

@@ -30,9 +30,6 @@ export class ResizeManager {
             scl = (innerHeight < height) ? innerHeight / height : 1;
         }
 
-        const windowSize = { width: innerWidth, height: innerHeight };
-
-        this.target.renderer.resize(innerWidth, innerHeight);
-        this.target.controller.view.resize({ scl, windowSize });
+        this.target.onResize({ scl, width: innerWidth, height: innerHeight });
     }
 }
