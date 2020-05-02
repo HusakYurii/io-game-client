@@ -1,5 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
+const Tools = require("../../../shared/Tools.js");
 
 export class GameLayer extends AbstractLayer {
     constructor(config) {
@@ -37,10 +38,17 @@ export class GameLayer extends AbstractLayer {
 
     createPlayer(data, selfId) {
         const config = {
-            pictureName: data.id === selfId ? "player" : "other",
-            name: data.id
+            pictureName: "player",
+            name: data.id,
+            modifiers: {
+                width: data.r * 2,
+                height: data.r * 2,
+                anchor: { x: 0.5, y: 0.5 },
+                position: { x: data.x, y: data.y }
+            }
         };
-        const player = GameLayer.createSprite(config, data);
+        const player = Builder.createSprite(config);
+        player.tint = data.id === selfId ? "0xFFFF00" : Tools.randomColor("0x");
         this.players[data.id] = player;
         this.gameWorld.addChild(player);
     }
@@ -48,15 +56,23 @@ export class GameLayer extends AbstractLayer {
     createElement(data, group) {
         const config = {
             pictureName: "item",
-            name: data.id
+            name: data.id,
+            modifiers: {
+                width: data.r * 2,
+                height: data.r * 2,
+                anchor: { x: 0.5, y: 0.5 },
+                position: { x: data.x, y: data.y }
+            }
         };
-        const element = GameLayer.createSprite(config, data);
+        const element = Builder.createSprite(config);
         this[group][data.id] = element;
         this.gameWorld.addChild(element);
     }
 
     updateElement(data, group) {
         const element = this[group][data.id];
+        element.width = data.r * 2;
+        element.height = data.r * 2;
         element.position.set(data.x, data.y);
     }
 
@@ -64,13 +80,5 @@ export class GameLayer extends AbstractLayer {
         const element = this[group][data.id];
         delete this[group][data.id];
         this.gameWorld.removeChild(element);
-    }
-
-    static createSprite(config, data) {
-        const sprite = Builder.createSprite(config);
-        sprite.position.set(data.x, data.y);
-        sprite.scale.set(0.5,0.5);
-        sprite.width = sprite.height = (data.r * 2);
-        return sprite;
     }
 }
