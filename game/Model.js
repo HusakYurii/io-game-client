@@ -4,7 +4,7 @@ export class Model {
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-        this.playerPos = { x: 0, y: 0 };
+        this.mouseLastPos = { x: 0, y: 0 };
 
         this.viewportSizes = {};
         this.gameStartTime = 0;
@@ -25,8 +25,8 @@ export class Model {
         this.name = name;
     }
 
-    updateUserPos(data) {
-        this.playerPos = { x: data.x, y: data.y };
+    updateMouseLastPos(data) {
+        this.mouseLastPos = { x: data.x, y: data.y };
     }
 
     setServerUpdates(data) {
@@ -53,7 +53,7 @@ export class Model {
         }
     }
 
-    getUserPos() {
-        return this.playerPos;
+    getMouseLastPos() {
+        return this.mouseLastPos;
     }
 }

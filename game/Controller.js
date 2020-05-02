@@ -61,18 +61,32 @@ export class Controller {
         this.view.turnOnControls(this.onPlayerMove, this.onPlayerClick);
     }
 
-    onPlayerMove(data) {
-        const { playerId, roomId } = this.model.getUserData();
-        const { x, y } = data.data.getLocalPosition(this.view);
-        this.sendUserUpdates({playerId, roomId, x, y});
+    onPlayerMove(event) {
+        const mousePos = this.processMousePos(event);
+        const playerData = this.model.getUserData();
+
+        this.model.updateMouseLastPos(mousePos);
+        this.sendUserUpdates({ ...playerData, ...mousePos });
     }
 
-    onPlayerClick(data) {
+    processMousePos(event) {
+        const { x, y } = event.data.getLocalPosition(this.view);
+        return {
+            x: Math.round(x),
+            y: Math.round(y)
+        }
+    }
+
+    onPlayerClick(event) {
         console.log("click");
     }
 
     update(dt) {
         this.view.updateGameLayer(this.model);
+
+        const mousePos = this.model.getMouseLastPos();
+        const playerData = this.model.getUserData();
+        this.sendUserUpdates({ ...playerData, ...mousePos });
     }
 
     // ============== connection ===============
@@ -92,12 +106,6 @@ export class Controller {
     onServerUpdates(payload) {
         const parsed = JSON.parse(payload);
 
-        const { playerId } = this.model.getUserData();
-
-        const playerUpdates = parsed.players.toUpdate
-            .find((data) => data.id === playerId);
-
-        this.model.updateUserPos(playerUpdates);
         this.model.setServerUpdates(parsed);
     }
 
