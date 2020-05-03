@@ -1,3 +1,5 @@
+import { Point } from "../libs/PixiCustomized.js";
+
 export class Controller {
 
     /**
@@ -9,9 +11,11 @@ export class Controller {
         this.view = view;
         this.socket = {};
 
+        this.interactionManager = {};
+
         this.update = this.update.bind(this);
-        this.onPlayerMove = this.onPlayerMove.bind(this);
-        this.onPlayerClick = this.onPlayerClick.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onDoubleClick = this.onDoubleClick.bind(this);
     }
 
     /**
@@ -58,18 +62,17 @@ export class Controller {
     }
 
     turnOnControls() {
-        this.view.turnOnControls(this.onPlayerMove, this.onPlayerClick);
+        this.view.turnOnControls(this.onClick, this.onDoubleClick);
     }
 
-    onPlayerMove(event) {
-        const mousePos = this.processMousePos(event);
+    onClick(event) {
+        const mousePos = this.processClickPos(event);
         const playerData = this.model.getUserData();
-
         this.model.updateMouseLastPos(mousePos);
         this.sendUserUpdates({ ...playerData, ...mousePos });
     }
 
-    processMousePos(event) {
+    processClickPos(event) {
         const { x, y } = event.data.getLocalPosition(this.view);
         return {
             x: Math.round(x),
@@ -77,8 +80,10 @@ export class Controller {
         }
     }
 
-    onPlayerClick(event) {
-        console.log("click");
+    onDoubleClick(event) {
+        const mousePos = this.model.getMouseLastPos();
+        const playerData = this.model.getUserData();
+        this.sendUserUpdates({ ...playerData, ...mousePos, activate: true });
     }
 
     update(dt) {

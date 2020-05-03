@@ -12,9 +12,11 @@ export class ControlLayer extends AbstractLayer {
         this.hitArea = new Builder.Rectangle(-width / 2, -height / 2, width, height);
     }
 
-    setControls(onMove, onActivate) {
+    setControls(onClick, onDoubleClick) {
+
         this.interactive = true;
-        // this.on("pointerdown", onMove);
-        this.on("mousedown", onMove);
+        // this.on("pointerdown", onClick);
+        this.on("mousedown", onClick);
+        this.on("dblclick", onDoubleClick);
     }
 }
