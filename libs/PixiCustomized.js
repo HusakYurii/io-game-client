@@ -38,6 +38,7 @@ Loader.registerPlugin(SpritesheetLoader);
 
 // Import my features
 import '../features/DisplayObject.js';
+import '../features/InteractionManager.js';
 
 export {
     Application
