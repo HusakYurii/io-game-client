@@ -6,6 +6,8 @@ export class Model {
         this.name = "";
         this.mouseLastPos = { x: 0, y: 0 };
 
+        this.isMobile = false;
+
         this.viewportSizes = {};
         this.gameStartTime = -1;
         this.gameRenderDelay = (1000 * 4) / 60 | 0;

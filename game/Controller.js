@@ -1,4 +1,3 @@
-import { Point } from "../libs/PixiCustomized.js";
 
 export class Controller {
 
@@ -40,6 +39,14 @@ export class Controller {
         this.view.setTextures(textures);
     }
 
+    defineDevice() {
+        const userAgent = Controller.getUserAgent();
+        const regExpList = Controller.getRegExpList();
+        this.model.isMobile = regExpList.some((regExp) => {
+            return regExp.test(userAgent);
+        });
+    }
+
     onResize(data) {
         this.model.updateViewportSizes(data);
         this.view.resize(data);
@@ -62,7 +69,8 @@ export class Controller {
     }
 
     turnOnControls() {
-        this.view.turnOnControls(this.onClick, this.onDoubleClick);
+        const { isMobile } = this.model;
+        this.view.turnOnControls(isMobile, this.onClick, this.onDoubleClick);
     }
 
     onClick(event) {
@@ -141,3 +149,19 @@ export class Controller {
         callback();
     }
 }
+
+Controller.getRegExpList = function () {
+    return [
+        new RegExp(/Android/i),
+        new RegExp(/webOS/i),
+        new RegExp(/iPhone/i),
+        new RegExp(/iPad/i),
+        new RegExp(/iPod/i),
+        new RegExp(/BlackBerry/i),
+        new RegExp(/Windows Phone/i)
+    ]
+};
+
+Controller.getUserAgent = function () {
+    return navigator.userAgent || navigator.vendor || window.opera || "";
+};

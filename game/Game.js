@@ -13,7 +13,7 @@ export class Game extends Application {
 
     init() {
         this.controller.initSocket(io);
-
+        this.controller.defineDevice();
         this.stage.addChild(this.controller.view);
         document.body.appendChild(this.view);
     }
