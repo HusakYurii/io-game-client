@@ -1,21 +1,35 @@
 export class Model {
     constructor(gameConfig) {
+        /*
+         * General data
+         */
         this.gameConfig = gameConfig;
+        this.viewportSizes = {};
+        this.isMobile = false;
+
+        this.tapCounter = 0;
+        this.doubleTapTime = 400;
+        this.timeCounter = 0;
+
+        /*
+         * Data related to player, it is being sent each tick
+         */
         this.playerId = "";
         this.roomId = "";
         this.name = "";
         this.mouseLastPos = { x: 0, y: 0 };
+        this.activate = false;
 
-        this.isMobile = false;
-
-        this.viewportSizes = {};
+        /*
+         * Data related to server/render updates
+         */
         this.gameStartTime = -1;
         this.gameRenderDelay = (1000 * 4) / 60 | 0;
 
         this.serverUpdates = [];
         this.serverStartTime = -1;
     }
-
+    
     updateViewportSizes(data) {
         this.viewportSizes = data;
     }
@@ -40,13 +54,13 @@ export class Model {
         }
 
         this.serverUpdates.push(data);
-        
+
         /**
          * To slice very old data out
          */
         const serverTime = this.getServerCurrentTime();
         for (let i = this.serverUpdates.length - 1; i >= 0; i -= 1) {
-            if(this.serverUpdates[i].time <= serverTime) {
+            if (this.serverUpdates[i].time <= serverTime) {
                 this.serverUpdates.splice(0, i);
                 break;
             }
@@ -55,6 +69,14 @@ export class Model {
 
     getServerUpdates() {
         return this.serverUpdates.shift();
+    }
+
+    activateUser() {
+        this.activate = true;
+    }
+
+    deactivateUser() {
+        this.activate = false;
     }
 
     /**

@@ -56,7 +56,7 @@ export class View extends Container {
         this.getLayerByName("GameLayer").updateGame(gameModel);
     }
 
-    turnOnControls(onMove, onActivate) {
-        this.getLayerByName("ControlLayer").setControls(onMove, onActivate);
+    turnOnControls(isMobile, onMove, onActivate) {
+        this.getLayerByName("ControlLayer").setControls(isMobile, onMove, onActivate);
     }
 }

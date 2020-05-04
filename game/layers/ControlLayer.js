@@ -5,18 +5,19 @@ export class ControlLayer extends AbstractLayer {
     constructor(config) {
         super(config);
 
+        this.hitArea = new Builder.Rectangle(-10000 / 2, -10000 / 2, 10000, 10000);
     }
 
-    resize(sizes) {
-        const { width, height } = sizes;
-        this.hitArea = new Builder.Rectangle(-width / 2, -height / 2, width, height);
-    }
-
-    setControls(onClick, onDoubleClick) {
+    setControls(isMobile, onClick, onDoubleClick) {
 
         this.interactive = true;
-        // this.on("pointerdown", onClick);
-        this.on("mousedown", onClick);
-        this.on("dblclick", onDoubleClick);
+
+        if (isMobile) {
+            this.on("pointerdown", onClick);
+        }
+        else {
+            this.on("mousedown", onClick);
+            this.on("dblclick", onDoubleClick);
+        }
     }
 }

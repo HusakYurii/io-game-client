@@ -13,6 +13,8 @@ export class Controller {
         this.interactionManager = {};
 
         this.update = this.update.bind(this);
+
+        this.onTap = this.onTap.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
     }
@@ -70,14 +72,20 @@ export class Controller {
 
     turnOnControls() {
         const { isMobile } = this.model;
-        this.view.turnOnControls(isMobile, this.onClick, this.onDoubleClick);
+        this.view.turnOnControls(
+            isMobile,
+            (isMobile ? this.onTap : this.onClick),
+            this.onDoubleClick
+        );
+    }
+
+    onTap(event) {
+        this.model.tapCounter += 1;
+        this.model.updateMouseLastPos(this.processClickPos(event));
     }
 
     onClick(event) {
-        const mousePos = this.processClickPos(event);
-        const playerData = this.model.getUserData();
-        this.model.updateMouseLastPos(mousePos);
-        this.sendUserUpdates({ ...playerData, ...mousePos });
+        this.model.updateMouseLastPos(this.processClickPos(event));
     }
 
     processClickPos(event) {
@@ -88,18 +96,48 @@ export class Controller {
         }
     }
 
-    onDoubleClick(event) {
+    onDoubleClick() {
+        this.model.activateUser();
+    }
+
+    preparePayload() {
         const mousePos = this.model.getMouseLastPos();
         const playerData = this.model.getUserData();
-        this.sendUserUpdates({ ...playerData, ...mousePos, activate: true });
+        const activate = this.model.activate;
+        this.model.deactivateUser();
+
+        return { ...playerData, ...mousePos, activate };
     }
 
     update(dt) {
         this.view.updateGameLayer(this.model);
 
-        const mousePos = this.model.getMouseLastPos();
-        const playerData = this.model.getUserData();
-        this.sendUserUpdates({ ...playerData, ...mousePos });
+        this.updateTapData(dt * (1000 / 60));
+
+        /*
+         * All user last actions are being sent once at the tick
+         * It also helps to avoid data overloading
+         */
+        this.sendUserUpdates(this.preparePayload());
+    }
+
+    /**
+     * As a user has tapped on the screen, start measuring the time.
+     * If by the time the timer has reached doubleTapTime the user has tapped twice or more -
+     * we can consider it as a double tap
+     * @param {number} delta ms
+     */
+    updateTapData(delta) {
+        if (this.model.tapCounter !== 0) {
+            this.model.timeCounter += delta;
+            if (this.model.timeCounter >= this.model.doubleTapTime) {
+                if (this.model.tapCounter >= 2) {
+                    this.model.activateUser();
+                }
+                this.model.tapCounter = 0;
+                this.model.timeCounter = 0;
+            }
+        }
     }
 
     // ============== connection ===============
