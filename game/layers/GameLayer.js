@@ -6,31 +6,38 @@ export class GameLayer extends AbstractLayer {
     constructor(config) {
         super(config);
 
-        this.players = {};
-        this.items = {};
+        this.players = Object.create(null);
+        this.items = Object.create(null);
         this.gameWorld = this.addChild(new Builder.Container());
     }
 
     updateGame(gameModel) {
-        const playerId = gameModel.playerId;
+        const { playerId } = gameModel.getUserData();
         const data = gameModel.getServerUpdates();
 
-        if (!data) return;
+        /**
+         * In the case of if the ping was too long, we might not have the data
+         */
+        if (!data) {
+            return;
+        }
 
-        data.items.toDelete.forEach((itemData) => {
-            this.deleteElement(itemData, "items");
-        });
+        this.deleteFromGroup(data.items, "items");
+        this.deleteFromGroup(data.players, "players");
+        // data.items.toDelete.forEach((itemData) => {
+        //     this.deleteElement(itemData, "items");
+        // });
 
-        data.players.toDelete.forEach((itemData) => {
-            this.deleteElement(itemData, "players");
-        });
+        // data.players.toDelete.forEach((itemData) => {
+        //     this.deleteElement(itemData, "players");
+        // });
 
-        data.items.toUpdate.forEach((itemData) => {
+        data.items.forEach((itemData) => {
             if (this.items[itemData.id]) this.updateElement(itemData, "items");
             else this.createElement(itemData, "items");
         });
 
-        data.players.toUpdate.forEach((playerData) => {
+        data.players.forEach((playerData) => {
             if (this.players[playerData.id]) this.updateElement(playerData, "players");
             else this.createPlayer(playerData, playerId);
         });
@@ -80,5 +87,14 @@ export class GameLayer extends AbstractLayer {
         const element = this[group][data.id];
         delete this[group][data.id];
         this.gameWorld.removeChild(element);
+    }
+
+    deleteFromGroup(list, group) {
+        for (let id in this[group]) {
+            const isExist = list.some((el) => el.id === id);
+            if (!isExist) {
+                this.deleteElement({ id }, group);
+            }
+        }
     }
 }
