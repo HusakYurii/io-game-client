@@ -7,8 +7,11 @@ export class Model {
         this.mouseLastPos = { x: 0, y: 0 };
 
         this.viewportSizes = {};
-        this.gameStartTime = 0;
+        this.gameStartTime = -1;
+        this.gameRenderDelay = (1000 * 4) / 60 | 0;
+
         this.serverUpdates = [];
+        this.serverStartTime = -1;
     }
 
     updateViewportSizes(data) {
@@ -30,11 +33,35 @@ export class Model {
     }
 
     setServerUpdates(data) {
+        if (this.serverStartTime < 0) {
+            this.serverStartTime = data.time;
+        }
+
         this.serverUpdates.push(data);
+        
+        /**
+         * To slice very old data out
+         */
+        const serverTime = this.getServerCurrentTime();
+        for (let i = this.serverUpdates.length - 1; i >= 0; i -= 1) {
+            if(this.serverUpdates[i].time <= serverTime) {
+                this.serverUpdates.splice(0, i);
+                break;
+            }
+        }
     }
 
     getServerUpdates() {
         return this.serverUpdates.shift();
+    }
+
+    /**
+     * To calculate how long the server is being running.
+     * Literally, it is the time of how long the game is running (starting from GameState)
+     * @returns {number} ms
+     */
+    getServerCurrentTime() {
+        return this.serverStartTime + (Date.now() - this.gameStartTime) - this.gameRenderDelay;
     }
 
     getServerUrl() {
