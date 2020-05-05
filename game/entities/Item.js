@@ -1,17 +1,18 @@
 import { Builder } from "../../libs/Builder.js";
 
-export class Item {
+export class Item extends Builder.Container {
     constructor(data) {
-        this.view = Builder.createSprite({
+        super();
+
+        this.view = this.addChild(Builder.createSprite({
             pictureName: "item",
             name: data.id,
             modifiers: {
-                width: data.r * 2,
-                height: data.r * 2,
-                anchor: { x: 0.5, y: 0.5 },
-                position: { x: data.x, y: data.y }
+                anchor: { x: 0.5, y: 0.5 }
             }
-        });;
+        }));
+
+        this.updateData(data);
     }
 
     /**
@@ -25,7 +26,7 @@ export class Item {
     updateData(data) {
         this.view.width = data.r * 2;
         this.view.height = data.r * 2;
-        this.view.position.set(data.x, data.y);
+        this.position.set(data.x, data.y);
     }
 
     /**

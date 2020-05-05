@@ -1,4 +1,5 @@
 import { Item } from "./Item";
+import { Builder } from "../../libs/Builder.js";
 const Tools = require("../../../shared/Tools.js");
 
 export class Player extends Item {
@@ -11,6 +12,55 @@ export class Player extends Item {
         this.gravityTime = 0;
         this.coolDownTimer = 0;
         this.coolDownTime = 0;
+        this.gravityRadius = 0;
+
+        this.gravityRing = this.addChild(
+            Builder.createSprite({
+                pictureName: "ring",
+                name: "ring",
+                modifiers: { anchor: { x: 0.5, y: 0.5 }, scale: { x: 1, y: 1 } }
+            })
+        );
+        this.coolDownBar = this.addChild(
+            Builder.createSprite({
+                pictureName: "background",
+                name: "coolDownTimer",
+                modifiers: { width: 0, height: 20 }
+            })
+        );
+        this.coolDownBar.tint = "0xFF0000";
+        this.coolDownBar.visible = false;
+        this.gravityRing.visible = false;
+    }
+
+    /**
+     * @override
+     */
+    update() {
+        this.updateGravityAimation();
+        this.updateCoolDownAnimation();
+    }
+
+    updateGravityAimation() {
+        this.gravityRing.visible = this.isActivated;
+        this.gravityRing.width = this.gravityRadius * 2;
+        this.gravityRing.height = this.gravityRadius * 2;
+    }
+
+    updateCoolDownAnimation() {
+        /*
+         * coolDownTime = 1  -- is a full bar
+         * coolDownTimer = ?  -- a fraction of that;
+         * 
+         * ? = (coolDownTimer * 1) / coolDownTime;
+         * and then reverse it
+         * 1 - ((coolDownTimer * 1) / coolDownTime)
+         */
+        this.coolDownBar.visible = !this.isCooledDown;
+        this.coolDownBar.width = 150 - ((this.coolDownTimer / this.coolDownTime) * 150);
+
+        const { width, height } = this.view;
+        this.coolDownBar.position.set(-150 / 2, -(height + 50) / 2);
     }
 
     /**
@@ -26,6 +76,7 @@ export class Player extends Item {
         this.gravityTime = data.gravityTime;
         this.coolDownTimer = data.coolDownTimer;
         this.coolDownTime = data.coolDownTime;
+        this.gravityRadius = data.gravityRadius;
     }
 
     /**
