@@ -20,4 +20,8 @@ export class ControlLayer extends AbstractLayer {
             this.on("dblclick", onDoubleClick);
         }
     }
+
+    removeControls() {
+        this.removeAllListeners();
+    }
 }
