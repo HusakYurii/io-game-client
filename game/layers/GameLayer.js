@@ -1,6 +1,7 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
-const Tools = require("../../../shared/Tools.js");
+import { Item } from "../entities/Item.js";
+import { Player } from "../entities/Player.js";
 
 export class GameLayer extends AbstractLayer {
     constructor(config) {
@@ -24,13 +25,6 @@ export class GameLayer extends AbstractLayer {
 
         this.deleteFromGroup(data.items, "items");
         this.deleteFromGroup(data.players, "players");
-        // data.items.toDelete.forEach((itemData) => {
-        //     this.deleteElement(itemData, "items");
-        // });
-
-        // data.players.toDelete.forEach((itemData) => {
-        //     this.deleteElement(itemData, "players");
-        // });
 
         data.items.forEach((itemData) => {
             if (this.items[itemData.id]) this.updateElement(itemData, "items");
@@ -44,43 +38,21 @@ export class GameLayer extends AbstractLayer {
     }
 
     createPlayer(data, selfId) {
-        const config = {
-            pictureName: "player",
-            name: data.id,
-            modifiers: {
-                width: data.r * 2,
-                height: data.r * 2,
-                anchor: { x: 0.5, y: 0.5 },
-                position: { x: data.x, y: data.y }
-            }
-        };
-        const player = Builder.createSprite(config);
-        player.tint = data.id === selfId ? "0xFFFF00" : Tools.randomColor("0x");
+        const player = Player.create(data, selfId);       
         this.players[data.id] = player;
         this.gameWorld.addChild(player);
     }
 
     createElement(data, group) {
-        const config = {
-            pictureName: "item",
-            name: data.id,
-            modifiers: {
-                width: data.r * 2,
-                height: data.r * 2,
-                anchor: { x: 0.5, y: 0.5 },
-                position: { x: data.x, y: data.y }
-            }
-        };
-        const element = Builder.createSprite(config);
+        const element = Item.create(data);
         this[group][data.id] = element;
         this.gameWorld.addChild(element);
     }
 
     updateElement(data, group) {
         const element = this[group][data.id];
-        element.width = data.r * 2;
-        element.height = data.r * 2;
-        element.position.set(data.x, data.y);
+        element.updateData(data);
+        element.update();
     }
 
     deleteElement(data, group) {
