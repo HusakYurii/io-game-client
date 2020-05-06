@@ -77,6 +77,10 @@ export class Model {
         this.player = player;
     }
 
+    getPlayer() {
+        return this.player;
+    }
+
     getServerUpdates() {
         return this.serverUpdates.shift();
     }
