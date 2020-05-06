@@ -89,7 +89,7 @@ export class Controller {
     }
 
     processClickPos(event) {
-        const { x, y } = event.data.getLocalPosition(this.view);
+        const { x, y } = event.data.getLocalPosition(this.model.player);
         return {
             x: Math.round(x),
             y: Math.round(y)
