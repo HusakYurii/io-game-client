@@ -11,14 +11,14 @@ export class LoginState extends AbstractState {
 
     onEnterState() {
         this.stateMachine.target.createGameBackground();
-        this.stateMachine.target.createLoginPopup(this.onUserInput.bind(this));
+        this.stateMachine.target.createLoginPopup(this.onPlayerInput.bind(this));
     }
 
-    onUserInput(data) {
-        this.stateMachine.target.loginUser(data, this.onUserLoggedin.bind(this));
+    onPlayerInput(data) {
+        this.stateMachine.target.loginPlayer(data, this.onPlayerLoggedin.bind(this));
     }
 
-    onUserLoggedin() {
+    onPlayerLoggedin() {
         this.goToNextState("ShowAdsState");
     }
 

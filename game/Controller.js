@@ -81,11 +81,11 @@ export class Controller {
 
     onTap(event) {
         this.model.tapCounter += 1;
-        this.model.updateMouseLastPos(this.processClickPos(event));
+        this.model.updatePlayerDir(this.processClickPos(event));
     }
 
     onClick(event) {
-        this.model.updateMouseLastPos(this.processClickPos(event));
+        this.model.updatePlayerDir(this.processClickPos(event));
     }
 
     processClickPos(event) {
@@ -97,14 +97,14 @@ export class Controller {
     }
 
     onDoubleClick() {
-        this.model.activateUser();
+        this.model.activatePlayer();
     }
 
     preparePayload() {
-        const mousePos = this.model.getMouseLastPos();
-        const playerData = this.model.getUserData();
+        const mousePos = this.model.getPlayerDir();
+        const playerData = this.model.getPlayerData();
         const activate = this.model.activate;
-        this.model.deactivateUser();
+        this.model.deactivatePlayer();
 
         return { ...playerData, ...mousePos, activate };
     }
@@ -115,15 +115,15 @@ export class Controller {
         this.updateTapData(dt * (1000 / 60));
 
         /*
-         * All user last actions are being sent once at the tick
+         * All Player last actions are being sent once at the tick
          * It also helps to avoid data overloading
          */
-        this.sendUserUpdates(this.preparePayload());
+        this.sendPlayerUpdates(this.preparePayload());
     }
 
     /**
-     * As a user has tapped on the screen, start measuring the time.
-     * If by the time the timer has reached doubleTapTime the user has tapped twice or more -
+     * As a Player has tapped on the screen, start measuring the time.
+     * If by the time the timer has reached doubleTapTime the Player has tapped twice or more -
      * we can consider it as a double tap
      * @param {number} delta ms
      */
@@ -132,7 +132,7 @@ export class Controller {
             this.model.timeCounter += delta;
             if (this.model.timeCounter >= this.model.doubleTapTime) {
                 if (this.model.tapCounter >= 2) {
-                    this.model.activateUser();
+                    this.model.activatePlayer();
                 }
                 this.model.tapCounter = 0;
                 this.model.timeCounter = 0;
@@ -150,8 +150,8 @@ export class Controller {
         this.socket.on('server-updates', this.onServerUpdates.bind(this));
     }
 
-    sendUserUpdates(data) {
-        this.socket.emit("user-updates", JSON.stringify(data));
+    sendPlayerUpdates(data) {
+        this.socket.emit("player-updates", JSON.stringify(data));
     }
 
     onServerUpdates(payload) {
@@ -161,29 +161,29 @@ export class Controller {
     }
 
 
-    loginUser(data, callback) {
-        const { playerId } = this.model.getUserData();
+    loginPlayer(data, callback) {
+        const { playerId } = this.model.getPlayerData();
 
         const playload = { id: playerId, ...data };
 
-        this.socket.emit("login-user", JSON.stringify(playload));
-        this.socket.on("user-loggedin", this.onUserLoggedin.bind(this, callback));
+        this.socket.emit("login-player", JSON.stringify(playload));
+        this.socket.on("player-loggedin", this.onPlayerLoggedin.bind(this, callback));
     }
 
-    onUserLoggedin(callback, payload) {
+    onPlayerLoggedin(callback, payload) {
         const parsed = JSON.parse(payload);
-        this.model.updateUserData(parsed);
+        this.model.updatePlayerData(parsed);
         callback();
     }
 
-    connectUser(callback) {
-        this.socket.emit("connect-user");
-        this.socket.on("user-connected", this.onUserConnected.bind(this, callback));
+    connectPlayer(callback) {
+        this.socket.emit("connect-player");
+        this.socket.on("player-connected", this.onPlayerConnected.bind(this, callback));
     }
 
-    onUserConnected(callback, payload) {
+    onPlayerConnected(callback, payload) {
         const parsed = JSON.parse(payload);
-        this.model.updateUserData(parsed);
+        this.model.updatePlayerData(parsed);
         callback();
     }
 }

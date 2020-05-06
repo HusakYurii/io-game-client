@@ -42,12 +42,12 @@ export class Game extends Application {
     }
 
     // ============== connection ===============
-    loginUser(data, callback) {
-        this.controller.loginUser(data, callback);
+    loginPlayer(data, callback) {
+        this.controller.loginPlayer(data, callback);
     }
 
-    connectUser(callback) {
-        this.controller.connectUser(callback);
+    connectPlayer(callback) {
+        this.controller.connectPlayer(callback);
     }
 
     setUpdatesConnection() {

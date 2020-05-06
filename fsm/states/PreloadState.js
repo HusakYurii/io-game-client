@@ -14,11 +14,11 @@ export class PreloadState extends AbstractState {
         const { target } = this.stateMachine;
         const onLoaded = callAfter(2, this.onAllLoaded, [], this);
         target.loadGameAssets(onLoaded);
-        target.connectUser(onLoaded);
+        target.connectPlayer(onLoaded);
     }
 
     onAllLoaded() {
-        console.log("Aseets loaded and user connected");
+        console.log("Aseets loaded and Player connected");
         this.goToNextState("LoginState");
     }
 

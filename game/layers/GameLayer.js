@@ -13,7 +13,7 @@ export class GameLayer extends AbstractLayer {
     }
 
     updateGame(gameModel) {
-        const { playerId } = gameModel.getUserData();
+        const { playerId } = gameModel.getPlayerData();
         const data = gameModel.getServerUpdates();
 
         /**
@@ -35,10 +35,14 @@ export class GameLayer extends AbstractLayer {
             if (this.players[playerData.id]) this.updateElement(playerData, "players");
             else this.createPlayer(playerData, playerId);
         });
+
+        if (!gameModel.hasPlayer()) {
+            gameModel.setPlayer(this.players[playerId]);
+        }
     }
 
     createPlayer(data, selfId) {
-        const player = Player.create(data, selfId);       
+        const player = Player.create(data, selfId);
         this.players[data.id] = player;
         this.gameWorld.addChild(player);
     }

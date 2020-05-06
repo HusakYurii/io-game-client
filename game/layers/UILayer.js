@@ -6,7 +6,7 @@ export class UILayer extends AbstractLayer {
         super(config);
         this.inputs = {};
         this.confirmBtn = null;
-        this.onUserInput = this.onUserInput.bind(this);
+        this.onPlayerInput = this.onPlayerInput.bind(this);
     }
 
     createLoginPopup(callback) {
@@ -15,14 +15,14 @@ export class UILayer extends AbstractLayer {
 
         this.inputs.nameInput = this.getChildByName("nameInput");
         this.inputs.roomIdInput = this.getChildByName("roomIdInput");
-        this.inputs.nameInput.on("input", this.onUserInput);
+        this.inputs.nameInput.on("input", this.onPlayerInput);
 
         this.confirmBtn = this.getChildByName("button");
-        this.confirmBtn.once("pointerdown", this.unUserConfirm.bind(this, callback));
+        this.confirmBtn.once("pointerdown", this.unPlayerConfirm.bind(this, callback));
     }
 
     removeLoginPopup() {
-        this.inputs.nameInput.off("input", this.onUserInput);
+        this.inputs.nameInput.off("input", this.onPlayerInput);
         this.inputs.nameInput.destroy();
         this.inputs.roomIdInput.destroy();
         this.inputs = {};
@@ -30,7 +30,7 @@ export class UILayer extends AbstractLayer {
         this.removeChildren();
     }
 
-    onUserInput(value) {
+    onPlayerInput(value) {
         const [alpha, enable] = (value.length >= 3) ? [1, true] : [0.7, false];
         this.confirmBtn.alpha = alpha;
         this.confirmBtn.interactive = enable;
@@ -42,7 +42,7 @@ export class UILayer extends AbstractLayer {
         this.inputs.roomIdInput.disabled = true;
     }
 
-    unUserConfirm(callback, event) {
+    unPlayerConfirm(callback, event) {
         event.stopPropagation();
         this.disableInputs();
         const { nameInput, roomIdInput } = this.inputs;

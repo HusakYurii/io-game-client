@@ -13,11 +13,13 @@ export class Model {
 
         /*
          * Data related to player, it is being sent each tick
+         * player will be set as game starts, so it can be availablein the model for every component
          */
+        this.player = null;
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-        this.mouseLastPos = { x: 0, y: 0 };
+        this.PlayerDir = { x: 0, y: 0 };
         this.activate = false;
 
         /*
@@ -29,7 +31,7 @@ export class Model {
         this.serverUpdates = [];
         this.serverStartTime = -1;
     }
-    
+
     updateViewportSizes(data) {
         this.viewportSizes = data;
     }
@@ -38,14 +40,14 @@ export class Model {
         this.gameStartTime = Date.now();
     }
 
-    updateUserData({ id, roomId, name } = {}) {
+    updatePlayerData({ id, roomId, name } = {}) {
         this.playerId = id;
         this.roomId = roomId;
         this.name = name;
     }
 
-    updateMouseLastPos(data) {
-        this.mouseLastPos = { x: data.x, y: data.y };
+    updatePlayerDir(data) {
+        this.PlayerDir = { x: data.x, y: data.y };
     }
 
     setServerUpdates(data) {
@@ -67,15 +69,23 @@ export class Model {
         }
     }
 
+    hasPlayer() {
+        return !!this.player
+    }
+
+    setPlayer(player) {
+        this.player = player;
+    }
+
     getServerUpdates() {
         return this.serverUpdates.shift();
     }
 
-    activateUser() {
+    activatePlayer() {
         this.activate = true;
     }
 
-    deactivateUser() {
+    deactivatePlayer() {
         this.activate = false;
     }
 
@@ -96,7 +106,7 @@ export class Model {
         return this.viewportSizes;
     }
 
-    getUserData() {
+    getPlayerData() {
         return {
             playerId: this.playerId,
             roomId: this.roomId,
@@ -104,7 +114,7 @@ export class Model {
         }
     }
 
-    getMouseLastPos() {
-        return this.mouseLastPos;
+    getPlayerDir() {
+        return this.PlayerDir;
     }
 }
