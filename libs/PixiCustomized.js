@@ -10,8 +10,10 @@ import { Application } from '@pixi/app';
 export * from '@pixi/sprite'; // Import Sprite to be used on stage
 export * from '@pixi/display'; // Import Container to be used on stage
 export * from '@pixi/sprite-animated';
+export * from '@pixi/sprite-tiling';
 export * from '@pixi/text';
 export * from "@pixi/math";
+import TextInput from "pixi-text-input";
 
 // In order that PIXI could render things we need to register appropriate plugins in Renderer
 import { Renderer } from '@pixi/core';
@@ -22,6 +24,9 @@ import * as interaction from '@pixi/interaction';
 
 Renderer.registerPlugin('batch', BatchRenderer);
 Renderer.registerPlugin('interaction', interaction.InteractionManager);
+
+import { TilingSpriteRenderer } from '@pixi/sprite-tiling';
+Renderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
 // TickerPlugin is the plugin for running an update loop (it's for the application class)
 import { TickerPlugin } from '@pixi/ticker';
@@ -41,5 +46,6 @@ import '../features/DisplayObject.js';
 import '../features/InteractionManager.js';
 
 export {
-    Application
+    Application,
+    TextInput
 }

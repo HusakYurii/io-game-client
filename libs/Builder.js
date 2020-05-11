@@ -1,5 +1,4 @@
-import { Container, Sprite, Text, TextStyle, Rectangle } from "./PixiCustomized.js";
-import TextInput from "pixi-text-input";
+import { Container, Sprite, Text, TextStyle, Rectangle, TilingSprite, TextInput } from "./PixiCustomized.js";
 
 export class Builder {
 
@@ -119,6 +118,10 @@ export class Builder {
 
     static get Rectangle() {
         return Rectangle;
+    }
+
+    static get TilingSprite() {
+        return TilingSprite;
     }
 }
 
