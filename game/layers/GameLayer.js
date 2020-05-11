@@ -12,12 +12,12 @@ export class GameLayer extends AbstractLayer {
         this.items = Object.create(null);
         this.gameWorld = this.addChild(new Builder.Container());
         this.cameraBounds = this.gameWorld.addChild(
-            new Graphics().lineStyle({ width: 4 })
+            new Graphics().lineStyle({ width: 4, color: "0xFFFFFF" })
                 .drawRect(-1500, -1500, 3000, 3000)
                 .endFill());
     }
 
-    updateGame(gameModel) {
+    updateLayer(dt, gameModel) {
         const { playerId } = gameModel.getPlayerData();
         const data = gameModel.getServerUpdates();
 
@@ -41,12 +41,9 @@ export class GameLayer extends AbstractLayer {
             else this.createPlayer(playerData, playerId);
         });
 
-
         if (!gameModel.hasPlayer()) {
             gameModel.setPlayer(this.players[playerId]);
         }
-
-        this.updateCamera(gameModel);
     }
 
     createPlayer(data, selfId) {
@@ -89,22 +86,11 @@ export class GameLayer extends AbstractLayer {
     }
 
     /**
-     * let's pretend that this is a camera component. 
-     * It will move world to a player's opposite side but set user's pos to be always at the center
-     * @param {Model} gameModel 
+     * @param {{x: number; y: number}} from - player curr pos
+     * @param {{x: number; y: number}}  to - player next pos
      */
-    updateCamera(gameModel) {
-        const player = gameModel.getPlayer();
-        this.moveCamera(player.x * -1, player.y * -1)
-        player.position.set(0, 0);
-    }
-
-    moveCamera(x, y) {
-        this.gameWorld.x = x;
-        this.gameWorld.y = y;
-    }
-
-    zoomCamera(n) {
-        this.scale.set(n);
+    move(from, to) {
+        this.gameWorld.x = from.x * -1;
+        this.gameWorld.y = from.y * -1;
     }
 }

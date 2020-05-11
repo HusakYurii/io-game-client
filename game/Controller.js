@@ -110,9 +110,11 @@ export class Controller {
     }
 
     update(dt) {
-        this.view.updateGameLayer(this.model);
-
+        this.view.updateLayers(dt, this.model);
+        this.view.updateCamera(dt, this.model);
+        
         this.updateTapData(dt * (1000 / 60));
+        this.model.resetPlayerPos();
 
         /*
          * All Player last actions are being sent once at the tick
@@ -158,6 +160,7 @@ export class Controller {
         const parsed = JSON.parse(payload);
 
         this.model.setServerUpdates(parsed);
+        this.model.updatePlayerPos();
     }
 
 

@@ -32,8 +32,11 @@ export class View extends Container {
         const { scl, width, height } = sizes;
         this.position.set(width / 2, height / 2);
         this.scale.set(scl);
+
         Object.values(this.viewLayers)
-            .forEach((layer) => layer.resize(sizes));
+            .forEach((layer) => {
+                layer.resize(sizes);
+            });
     }
 
     getLayerByName(layerName) {
@@ -52,11 +55,31 @@ export class View extends Container {
         this.getLayerByName("UILayer").removeLoginPopup();
     }
 
-    updateGameLayer(gameModel) {
-        this.getLayerByName("GameLayer").updateGame(gameModel);
-    }
-
     turnOnControls(isMobile, onMove, onActivate) {
         this.getLayerByName("ControlLayer").setControls(isMobile, onMove, onActivate);
+    }
+
+    /**
+     * 
+     * @param {number} dt - delta time
+     * @param {Model} gameModel - game model
+     */
+    updateLayers(dt, gameModel) {
+        Object.values(this.viewLayers)
+            .forEach((layer) => {
+                layer.updateLayer(dt, gameModel)
+            });
+    }
+
+    /**
+     * let's pretend that this is a camera component. 
+     * It will move world to a player's opposite side but set user's pos to be always at the center
+     * @param {number} dt - delta time
+     * @param {Model} gameModel 
+     */
+    updateCamera(dt, gameModel) {
+        const { from, to } = gameModel.getPlayerPos();
+        this.getLayerByName("BackgroundLayer").move(from, to);
+        this.getLayerByName("GameLayer").move(from, to);
     }
 }
