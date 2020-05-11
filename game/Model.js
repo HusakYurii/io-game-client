@@ -19,7 +19,11 @@ export class Model {
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-        this.PlayerDir = { x: 0, y: 0 };
+        this.playerPos = {
+            from: { x: 0, y: 0 },
+            to: { x: 0, y: 0 }
+        };
+        this.playerDir = { x: 0, y: 0 };
         this.activate = false;
 
         /*
@@ -47,7 +51,28 @@ export class Model {
     }
 
     updatePlayerDir(data) {
-        this.PlayerDir = { x: data.x, y: data.y };
+        this.playerDir = { x: data.x, y: data.y };
+    }
+
+    updatePlayerPos() {
+        const find = (list, id) => list.find((item) => item.id === id);
+
+        const [curr, next] = this.serverUpdates;
+        let currPos, nextPos;
+
+        if (curr && next) {
+            currPos = find(curr.players, this.playerId);
+            nextPos = find(next.players, this.playerId);
+        }
+        else if (curr && !next) {
+            currPos = find(curr.players, this.playerId);
+            nextPos = { ...currPos };
+        }
+        else {
+            return;
+        }
+        this.playerPos.from = { x: currPos.x, y: currPos.y };
+        this.playerPos.to = { x: nextPos.x, y: nextPos.y };
     }
 
     setServerUpdates(data) {
@@ -67,6 +92,17 @@ export class Model {
                 break;
             }
         }
+    }
+
+    /**
+     * Reset player pos back to 0, to make camera effect while game and bg are moving
+     */
+    resetPlayerPos() {
+        if (!this.player) {
+            return;
+        }
+
+        this.player.position.set(0, 0);
     }
 
     hasPlayer() {
@@ -118,7 +154,11 @@ export class Model {
         }
     }
 
+    getPlayerPos() {
+        return this.playerPos;
+    }
+
     getPlayerDir() {
-        return this.PlayerDir;
+        return this.playerDir;
     }
 }
