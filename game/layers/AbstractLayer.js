@@ -20,4 +20,10 @@ export class AbstractLayer extends Container {
      * @param {object} sizes 
      */
     resize(sizes) { }
+
+    /**
+     * @abstract
+     * @param {number} dt - delta time 
+     */
+    updateLayer(dt) { }
 }
