@@ -16,14 +16,14 @@ export class Player extends Item {
 
         this.gravityRing = this.addChild(
             Builder.createSprite({
-                pictureName: "ring",
+                pictureName: "item",
                 name: "ring",
-                modifiers: { anchor: { x: 0.5, y: 0.5 }, scale: { x: 1, y: 1 } }
+                modifiers: { alpha: 0.2, anchor: { x: 0.5, y: 0.5 }, scale: { x: 1, y: 1 } }
             })
         );
         this.coolDownBar = this.addChild(
             Builder.createSprite({
-                pictureName: "background",
+                pictureName: "loginFormBackground",
                 name: "coolDownTimer",
                 modifiers: { width: 0, height: 20 }
             })

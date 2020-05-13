@@ -72,6 +72,7 @@ export class Game extends Application {
     }
 
     startGameLoop() {
-        this.ticker.add(this.controller.update)
+
+        this.ticker.add(this.controller.update.bind(this.controller, this.ticker));
     }
 }

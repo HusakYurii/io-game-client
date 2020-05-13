@@ -17,7 +17,6 @@ export class GameLayer extends AbstractLayer {
             rectWidth: WORLD_WIDTH, rectHeight: WORLD_HEIGTH, width: 6, color: "0xFFFFFF"
         }));
         this.calculateBounds.cacheAsBitmap = true;
-        this.scale.set(0.5);
     }
 
     updateLayer(dt, gameModel) {
@@ -50,6 +49,7 @@ export class GameLayer extends AbstractLayer {
     }
 
     createPlayer(data, selfId) {
+        data.pictureName = "item"; // FIXME it is not a good idea
         const player = Player.create(data, selfId);
         this.players[data.id] = player;
 
@@ -61,7 +61,9 @@ export class GameLayer extends AbstractLayer {
     }
 
     createElement(data, group) {
+        data.pictureName = "star"; // FIXME it is not a good idea
         const element = Item.create(data);
+        element.startAnimation();
         this[group][data.id] = element;
         this.gameWorld.addChild(element);
     }
@@ -74,6 +76,7 @@ export class GameLayer extends AbstractLayer {
 
     deleteElement(data, group) {
         const element = this[group][data.id];
+        element.stopAnimation();
         delete this[group][data.id];
         this.gameWorld.removeChild(element);
         this.removeChild(element);

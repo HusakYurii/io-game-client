@@ -11,9 +11,8 @@ export class BackgroundLayer extends AbstractLayer {
     }
 
     createBackground() {
-        this.addChild(...Builder.fromConfig(this.config.background));
 
-        this.gameWorldBg = this.addChild(new Builder.TilingSprite(this.viewTextures["sky"], WORLD_WIDTH, WORLD_HEIGTH));
+        this.gameWorldBg = this.addChild(new Builder.TilingSprite(this.viewTextures["hexagon"], WORLD_WIDTH, WORLD_HEIGTH));
         this.gameWorldBg.anchor.set(0.5, 0.5);
     }
 

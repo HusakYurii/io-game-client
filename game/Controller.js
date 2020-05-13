@@ -1,4 +1,6 @@
 const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
+import { TWEEN } from "../libs/Tween.js";
+
 export class Controller {
 
     /**
@@ -12,7 +14,7 @@ export class Controller {
 
         this.interactionManager = {};
 
-        this.update = this.update.bind(this);
+        // this.update = this.update.bind(this);
 
         this.onTap = this.onTap.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -109,7 +111,9 @@ export class Controller {
         return { ...playerData, ...mousePos, activate };
     }
 
-    update(dt) {
+    update(ticker, dt) {
+        TWEEN.update(ticker.lastTime);
+
         this.view.updateLayers(dt, this.model);
         this.view.updateCamera(dt, this.model);
 
