@@ -1,3 +1,7 @@
+
+const { GAME_CONSTANTS } = require("../../shared/Constants.js");
+const { WORLD_WIDTH, WORLD_HEIGTH } = GAME_CONSTANTS;
+
 export const backgroundLayerConfig = {
     layerName: "BackgroundLayer",
     layerIndex: 0,
@@ -7,8 +11,8 @@ export const backgroundLayerConfig = {
         pictureName: "background",
         modifiers: {
             anchor: { x: 0.5, y: 0.5 },
-            width: 2000,
-            height: 2000
+            width: WORLD_WIDTH,
+            height: WORLD_HEIGTH
         }
     }]
 };

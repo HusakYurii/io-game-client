@@ -1,4 +1,4 @@
-
+const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
 export class Controller {
 
     /**
@@ -112,7 +112,7 @@ export class Controller {
     update(dt) {
         this.view.updateLayers(dt, this.model);
         this.view.updateCamera(dt, this.model);
-        
+
         this.updateTapData(dt * (1000 / 60));
         this.model.resetPlayerPos();
 
@@ -149,11 +149,11 @@ export class Controller {
 
     setUpdatesConnection() {
         this.model.updateGameStartTime();
-        this.socket.on('server-updates', this.onServerUpdates.bind(this));
+        this.socket.on(CONNECTION_CONSTANTS.SERVER_UPDATES, this.onServerUpdates.bind(this));
     }
 
     sendPlayerUpdates(data) {
-        this.socket.emit("player-updates", JSON.stringify(data));
+        this.socket.emit(CONNECTION_CONSTANTS.PLAYER_UPDATES, JSON.stringify(data));
     }
 
     onServerUpdates(payload) {
@@ -169,8 +169,8 @@ export class Controller {
 
         const playload = { id: playerId, ...data };
 
-        this.socket.emit("login-player", JSON.stringify(playload));
-        this.socket.on("player-loggedin", this.onPlayerLoggedin.bind(this, callback));
+        this.socket.emit(CONNECTION_CONSTANTS.LOGIN_PLAYER, JSON.stringify(playload));
+        this.socket.on(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, this.onPlayerLoggedin.bind(this, callback));
     }
 
     onPlayerLoggedin(callback, payload) {
@@ -180,8 +180,8 @@ export class Controller {
     }
 
     connectPlayer(callback) {
-        this.socket.emit("connect-player");
-        this.socket.on("player-connected", this.onPlayerConnected.bind(this, callback));
+        this.socket.emit(CONNECTION_CONSTANTS.CONNECT_PLAYER);
+        this.socket.on(CONNECTION_CONSTANTS.PLAYER_CONNECTED, this.onPlayerConnected.bind(this, callback));
     }
 
     onPlayerConnected(callback, payload) {

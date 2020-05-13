@@ -2,7 +2,9 @@ import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
 import { Item } from "../entities/Item.js";
 import { Player } from "../entities/Player.js";
-import { Graphics } from "@pixi/graphics";
+
+const { GAME_CONSTANTS } = require("../../../shared/Constants.js");
+const { WORLD_WIDTH, WORLD_HEIGTH } = GAME_CONSTANTS;
 
 export class GameLayer extends AbstractLayer {
     constructor(config) {
@@ -11,10 +13,11 @@ export class GameLayer extends AbstractLayer {
         this.players = Object.create(null);
         this.items = Object.create(null);
         this.gameWorld = this.addChild(new Builder.Container());
-        this.cameraBounds = this.gameWorld.addChild(
-            new Graphics().lineStyle({ width: 4, color: "0xFFFFFF" })
-                .drawRect(-1500, -1500, 3000, 3000)
-                .endFill());
+        this.cameraBounds = this.gameWorld.addChild(Builder.strokeRect({
+            rectWidth: WORLD_WIDTH, rectHeight: WORLD_HEIGTH, width: 6, color: "0xFFFFFF"
+        }));
+        this.calculateBounds.cacheAsBitmap = true;
+        this.scale.set(0.5);
     }
 
     updateLayer(dt, gameModel) {

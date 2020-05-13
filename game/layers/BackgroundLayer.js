@@ -1,7 +1,8 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
 
-
+const { GAME_CONSTANTS } = require("../../../shared/Constants.js");
+const { WORLD_WIDTH, WORLD_HEIGTH } = GAME_CONSTANTS;
 
 export class BackgroundLayer extends AbstractLayer {
     constructor(config) {
@@ -11,7 +12,8 @@ export class BackgroundLayer extends AbstractLayer {
 
     createBackground() {
         this.addChild(...Builder.fromConfig(this.config.background));
-        this.gameWorldBg = this.addChild(new Builder.TilingSprite(this.viewTextures["sky"], 3000, 3000));
+
+        this.gameWorldBg = this.addChild(new Builder.TilingSprite(this.viewTextures["sky"], WORLD_WIDTH, WORLD_HEIGTH));
         this.gameWorldBg.anchor.set(0.5, 0.5);
     }
 
