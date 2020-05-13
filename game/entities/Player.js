@@ -1,6 +1,6 @@
 import { Item } from "./Item";
 import { Builder } from "../../libs/Builder.js";
-const Tools = require("../../../shared/Tools.js");
+const { randomColor } = require("../../../shared/Tools.js");
 
 export class Player extends Item {
     constructor(data) {
@@ -86,7 +86,7 @@ export class Player extends Item {
      */
     static create(data, selfId) {
         const player = new Player(data);
-        player.view.tint = data.id === selfId ? "0xFFFF00" : Tools.randomColor("0x");
+        player.view.tint = data.id === selfId ? "0xFFFF00" : randomColor("0x");
         return player;
     }
 }
