@@ -1,6 +1,16 @@
-import { Container, Sprite, Text, TextStyle, Rectangle, TilingSprite, TextInput } from "./PixiCustomized.js";
-
+import { Container, Sprite, Text, TextStyle, Rectangle, TilingSprite, TextInput, Graphics } from "./PixiCustomized.js";
 export class Builder {
+
+    /**
+     * @static
+     * @param {{rectWidth: number, rectHeight: number, width: number, color: string}} param0 
+     * @returns {Graphics}
+     */
+    static strokeRect({ rectWidth = 10, rectHeight = 10, width, color } = {}) {
+        return new Builder.Graphics().lineStyle({ width, color })
+            .drawRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight)
+            .endFill()
+    }
 
     /**
      * @static
@@ -122,6 +132,10 @@ export class Builder {
 
     static get TilingSprite() {
         return TilingSprite;
+    }
+
+    static get Graphics() {
+        return Graphics;
     }
 }
 

@@ -13,6 +13,7 @@ export * from '@pixi/sprite-animated';
 export * from '@pixi/sprite-tiling';
 export * from '@pixi/text';
 export * from "@pixi/math";
+export * from "@pixi/graphics";
 import TextInput from "pixi-text-input";
 
 // In order that PIXI could render things we need to register appropriate plugins in Renderer
