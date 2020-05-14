@@ -6,6 +6,7 @@ export class Model {
         this.gameConfig = gameConfig;
         this.viewportSizes = {};
         this.isMobile = false;
+        this.isGameStarted = false;
 
         this.tapCounter = 0;
         this.doubleTapTime = 400;
@@ -81,6 +82,7 @@ export class Model {
         }
 
         this.serverUpdates.push(data);
+        this.isGameStarted = true;
 
         /**
          * To slice very old data out
