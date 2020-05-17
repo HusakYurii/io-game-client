@@ -8,10 +8,6 @@ export class Model {
         this.isMobile = false;
         this.isGameStarted = false;
 
-        this.tapCounter = 0;
-        this.doubleTapTime = 400;
-        this.timeCounter = 0;
-
         /*
          * Data related to player, it is being sent each tick
          * player will be set as game starts, so it can be availablein the model for every component

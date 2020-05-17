@@ -14,9 +14,6 @@ export class Controller {
 
         this.interactionManager = {};
 
-        // this.update = this.update.bind(this);
-
-        this.onTap = this.onTap.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
     }
@@ -73,29 +70,14 @@ export class Controller {
     }
 
     turnOnControls() {
-        const { isMobile } = this.model;
-        this.view.turnOnControls(
-            isMobile,
-            (isMobile ? this.onTap : this.onClick),
-            this.onDoubleClick
-        );
+        this.view.turnOnControls(this.onClick, this.onDoubleClick);
     }
 
-    onTap(event) {
-        this.model.tapCounter += 1;
-        this.model.updatePlayerDir(this.processClickPos(event));
-    }
-
-    onClick(event) {
-        this.model.updatePlayerDir(this.processClickPos(event));
-    }
-
-    processClickPos(event) {
-        const { x, y } = event.data.getLocalPosition(this.model.player);
-        return {
+    onClick({x, y}) {
+        this.model.updatePlayerDir({
             x: Math.round(x),
             y: Math.round(y)
-        }
+        });
     }
 
     onDoubleClick() {
@@ -117,7 +99,6 @@ export class Controller {
         this.view.updateLayers(dt, this.model);
         this.view.updateCamera(dt, this.model);
 
-        this.updateTapData(dt * (1000 / 60));
         this.model.resetPlayerPos();
 
         /*
@@ -125,25 +106,6 @@ export class Controller {
          * It also helps to avoid data overloading
          */
         this.sendPlayerUpdates(this.preparePayload());
-    }
-
-    /**
-     * As a Player has tapped on the screen, start measuring the time.
-     * If by the time the timer has reached doubleTapTime the Player has tapped twice or more -
-     * we can consider it as a double tap
-     * @param {number} delta ms
-     */
-    updateTapData(delta) {
-        if (this.model.tapCounter !== 0) {
-            this.model.timeCounter += delta;
-            if (this.model.timeCounter >= this.model.doubleTapTime) {
-                if (this.model.tapCounter >= 2) {
-                    this.model.activatePlayer();
-                }
-                this.model.tapCounter = 0;
-                this.model.timeCounter = 0;
-            }
-        }
     }
 
     // ============== connection ===============
