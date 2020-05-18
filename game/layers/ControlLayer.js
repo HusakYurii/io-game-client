@@ -47,10 +47,10 @@ export class ControlLayer extends AbstractLayer {
 
     removeControls() {
         this.joystick.removeAllListeners();
-        this.joystick.interactive = false;
+        this.removeChild(this.joystick);
 
         this.activateBtn.removeAllListeners();
-        this.activateBtn.interactive = false;
+        this.removeChild(this.activateBtn);
 
         this.onDirChangedCb = () => { };
         this.onAtivatedCb = () => { };

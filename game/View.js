@@ -51,6 +51,10 @@ export class View extends Container {
         this.getLayerByName("BackgroundLayer").createBackground();
     }
 
+    createGameOverPopup(callback) {
+        this.getLayerByName("UILayer").createGameOverPopup(callback);
+    }
+
     createLoginPopup(callback) {
         this.getLayerByName("UILayer").createLoginPopup(callback);
     }
@@ -59,8 +63,12 @@ export class View extends Container {
         this.getLayerByName("UILayer").removeLoginPopup();
     }
 
-    turnOnControls(isMobile, onMove, onActivate) {
-        this.getLayerByName("ControlLayer").setControls(isMobile, onMove, onActivate);
+    turnOnControls(onMove, onActivate) {
+        this.getLayerByName("ControlLayer").setControls(onMove, onActivate);
+    }
+
+    turnOffControls() {
+        this.getLayerByName("ControlLayer").removeControls();
     }
 
     /**
@@ -103,7 +111,7 @@ export class View extends Container {
 
     checkBoundaries(minViewportSize, playerWidth) {
         /* the same as player.worldTransform.a you can use any of this ways */
-        const currScale = this.cameraAdjustmentScls[0] * this.scale.x; 
+        const currScale = this.cameraAdjustmentScls[0] * this.scale.x;
         const occupiedView = minViewportSize - (playerWidth * currScale);
         const needToZoom = occupiedView < minViewportSize * this.ratiosAllowedToOccupy[0];
 

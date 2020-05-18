@@ -50,11 +50,23 @@ export class Game extends Application {
         this.controller.connectPlayer(callback);
     }
 
-    setUpdatesConnection() {
-        this.controller.setUpdatesConnection();
+    disconnectPlayer() {
+        this.controller.disconnectPlayer();
+    }
+
+    setUpdatesConnection(callback) {
+        this.controller.setUpdatesConnection(callback);
+    }
+
+    setGameOverStatus() {
+        this.controller.setGameOverStatus();
     }
 
     // ============== connection ===============
+    createGameOverPopup(callback) {
+        this.controller.createGameOverPopup(callback);
+    }
+
     createLoginPopup(callback) {
         this.controller.createLoginPopup(callback);
     }
@@ -69,6 +81,10 @@ export class Game extends Application {
 
     turnOnControls() {
         this.controller.turnOnControls();
+    }
+
+    turnOffControls() {
+        this.controller.turnOffControls();
     }
 
     startGameLoop() {

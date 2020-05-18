@@ -7,6 +7,7 @@ export class Model {
         this.viewportSizes = {};
         this.isMobile = false;
         this.isGameStarted = false;
+        this.isGameOver = false;
 
         /*
          * Data related to player, it is being sent each tick
@@ -52,22 +53,15 @@ export class Model {
     }
 
     updatePlayerPos() {
-        const find = (list, id) => list.find((item) => item.id === id);
+        const find = (list = [], id) => {
+            return list.find((item) => item.id === id);
+        };
 
-        const [curr, next] = this.serverUpdates;
-        let currPos, nextPos;
+        const [curr = {}, next = {}] = this.serverUpdates;
 
-        if (curr && next) {
-            currPos = find(curr.players, this.playerId);
-            nextPos = find(next.players, this.playerId);
-        }
-        else if (curr && !next) {
-            currPos = find(curr.players, this.playerId);
-            nextPos = { ...currPos };
-        }
-        else {
-            return;
-        }
+        let currPos = find(curr.players, this.playerId) || { x: 0, y: 0 };
+        let nextPos = find(next.players, this.playerId) || { ...currPos };
+
         this.playerPos.from = { x: currPos.x, y: currPos.y };
         this.playerPos.to = { x: nextPos.x, y: nextPos.y };
     }

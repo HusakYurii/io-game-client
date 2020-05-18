@@ -56,6 +56,10 @@ export class Controller {
     setViewLayers(layers) {
         this.view.setLaters(layers);
     }
+    
+    createGameOverPopup(callback) {
+        this.view.createGameOverPopup(callback);
+    }
 
     createLoginPopup(callback) {
         this.view.createLoginPopup(callback);
@@ -73,7 +77,15 @@ export class Controller {
         this.view.turnOnControls(this.onClick, this.onDoubleClick);
     }
 
-    onClick({x, y}) {
+    turnOffControls() {
+        this.view.turnOffControls();
+    }
+
+    setGameOverStatus() {
+        this.model.isGameOver = true;
+    }
+
+    onClick({ x, y }) {
         this.model.updatePlayerDir({
             x: Math.round(x),
             y: Math.round(y)
@@ -101,6 +113,9 @@ export class Controller {
 
         this.model.resetPlayerPos();
 
+        if (this.model.isGameOver) {
+            return;
+        }
         /*
          * All Player last actions are being sent once at the tick
          * It also helps to avoid data overloading
@@ -113,9 +128,10 @@ export class Controller {
         this.socket = socket(this.model.getServerUrl());
     }
 
-    setUpdatesConnection() {
+    setUpdatesConnection(callback) {
         this.model.updateGameStartTime();
         this.socket.on(CONNECTION_CONSTANTS.SERVER_UPDATES, this.onServerUpdates.bind(this));
+        this.socket.on(CONNECTION_CONSTANTS.GAME_OVER, callback);
     }
 
     sendPlayerUpdates(data) {
@@ -148,6 +164,11 @@ export class Controller {
     connectPlayer(callback) {
         this.socket.emit(CONNECTION_CONSTANTS.CONNECT_PLAYER);
         this.socket.on(CONNECTION_CONSTANTS.PLAYER_CONNECTED, this.onPlayerConnected.bind(this, callback));
+    }
+
+    disconnectPlayer() {
+        this.socket.close();
+        this.socket.removeAllListeners();
     }
 
     onPlayerConnected(callback, payload) {

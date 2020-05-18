@@ -7,18 +7,26 @@ export class GameState extends AbstractState {
      */
     constructor(stateMachine) {
         super("GameState", stateMachine);
+
+        this.onGameOver = this.onGameOver.bind(this);
     }
 
     onEnterState() {
-        this.stateMachine.target.setUpdatesConnection();
+        this.stateMachine.target.setUpdatesConnection(this.onGameOver);
         this.stateMachine.target.turnOnControls();
         this.stateMachine.target.startGameLoop();
+    }
+
+    onGameOver() {
+        this.stateMachine.target.setGameOverStatus();
+        this.goToNextState("GameOverState");
     }
 
     /**
      * @param {function} callback 
      */
     onExitState(callback) {
+        this.stateMachine.target.turnOffControls();
         callback();
     }
 }
