@@ -18,6 +18,7 @@ export class GameState extends AbstractState {
     }
 
     onGameOver() {
+        this.stateMachine.target.turnOffControls();
         this.stateMachine.target.setGameOverStatus();
         this.goToNextState("GameOverState");
     }
@@ -26,7 +27,6 @@ export class GameState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
-        this.stateMachine.target.turnOffControls();
         callback();
     }
 }

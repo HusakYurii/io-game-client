@@ -11,14 +11,12 @@ export class PreloadState extends AbstractState {
     }
 
     onEnterState() {
-        const { target } = this.stateMachine;
         const onLoaded = callAfter(2, this.onAllLoaded, [], this);
-        target.loadGameAssets(onLoaded);
-        target.connectPlayer(onLoaded);
+        this.stateMachine.target.loadGameAssets(onLoaded);
+        this.stateMachine.target.connectPlayer(onLoaded);
     }
 
     onAllLoaded() {
-        console.log("Aseets loaded and Player connected");
         this.goToNextState("LoginState");
     }
 
@@ -26,6 +24,8 @@ export class PreloadState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
+        this.stateMachine.target.createGameBackground();
+        this.stateMachine.target.createGameWorld();
         callback();
     }
 }

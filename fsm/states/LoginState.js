@@ -10,8 +10,9 @@ export class LoginState extends AbstractState {
     }
 
     onEnterState() {
-        this.stateMachine.target.createGameBackground();
         this.stateMachine.target.createLoginPopup(this.onPlayerInput.bind(this));
+        
+        window.dispatchEvent(new Event("resize")); // FIXME
     }
 
     onPlayerInput(data) {
