@@ -12,8 +12,23 @@ export class GameLayer extends AbstractLayer {
 
         this.players = Object.create(null);
         this.items = Object.create(null);
+        this.cameraBounds = null;
+        this.gameWorld = null;
+    }
+
+    cleanupLayer() {
+        Object.values(this.players).forEach((player) => player.stopAnimation());
+        Object.values(this.items).forEach((item) => item.stopAnimation());
+
+        this.players = Object.create(null);
+
+        this.items = Object.create(null);
+        this.gameWorld.removeChildren();
+    }
+
+    createGameWorld() {
         this.gameWorld = this.addChild(new Builder.Container());
-        this.cameraBounds = this.gameWorld.addChild(Builder.strokeRect({
+        this.cameraBounds = this.addChild(Builder.strokeRect({
             rectWidth: WORLD_WIDTH, rectHeight: WORLD_HEIGTH, width: 6, color: "0xFFFFFF"
         }));
         this.calculateBounds.cacheAsBitmap = true;
@@ -82,6 +97,12 @@ export class GameLayer extends AbstractLayer {
         this.removeChild(element);
     }
 
+    /**
+     * Each new update from the server should be checked and if it does not have any items, 
+     * but which are in view container we need to remove them from view 
+     * @param {object[]} list - list of items/players from the server
+     * @param {string} group - name of a group to clean
+     */
     deleteFromGroup(list, group) {
         for (let id in this[group]) {
             const isExist = list.some((el) => el.id === id);
@@ -96,7 +117,7 @@ export class GameLayer extends AbstractLayer {
      * @param {{x: number; y: number}}  to - player next pos
      */
     move(from, to) {
-        this.gameWorld.x = from.x * -1;
-        this.gameWorld.y = from.y * -1;
+        this.gameWorld.position.set(from.x * -1, from.y * -1);
+        this.cameraBounds.position.set(from.x * -1, from.y * -1);
     }
 }

@@ -33,6 +33,28 @@ export class Model {
         this.serverUpdates = [];
         this.serverStartTime = -1;
     }
+    
+    cleanUpData() {
+        this.isGameStarted = false;
+        this.isGameOver = false;
+
+        this.player = null;
+        this.playerId = "";
+        this.roomId = "";
+        this.name = "";
+        this.playerPos = {
+            from: { x: 0, y: 0 },
+            to: { x: 0, y: 0 }
+        };
+        this.playerDir = { x: 0, y: 0 };
+        this.activate = false;
+
+        this.gameStartTime = -1;
+        this.gameRenderDelay = (1000 * 4) / 60 | 0;
+
+        this.serverUpdates = [];
+        this.serverStartTime = -1;
+    }
 
     updateViewportSizes(data) {
         this.viewportSizes = data;
@@ -60,7 +82,7 @@ export class Model {
         const [curr = {}, next = {}] = this.serverUpdates;
 
         let currPos = find(curr.players, this.playerId) || { x: 0, y: 0 };
-        let nextPos = find(next.players, this.playerId) || { ...currPos };
+        let nextPos = find(next.players, this.playerId) || { x: currPos.x, y: currPos.y };
 
         this.playerPos.from = { x: currPos.x, y: currPos.y };
         this.playerPos.to = { x: nextPos.x, y: nextPos.y };

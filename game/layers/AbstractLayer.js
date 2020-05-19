@@ -26,4 +26,9 @@ export class AbstractLayer extends Container {
      * @param {number} dt - delta time 
      */
     updateLayer(dt) { }
+    
+    /**
+     * @abstract
+     */
+    cleanupLayer() { }
 }

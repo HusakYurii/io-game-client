@@ -21,7 +21,7 @@ export class Item extends Builder.Container {
 
     startAnimation() {
         this.tween = new TWEEN.Tween(this.view)
-            .to({ alpha: randomFloat(0.5, 0.9) }, randomInt(1000, 3000))
+            .to({ alpha: randomFloat(0.2, 0.6) }, randomInt(1000, 2000))
             .repeat(Infinity)
             .yoyo(true)
             .start();

@@ -52,4 +52,15 @@ export class UILayer extends AbstractLayer {
             roomId: roomIdInput.htmlInput.value
         });
     }
+
+    createGameOverPopup(callback) {
+        const popup = this.addChild(...Builder.fromConfig(this.config.gameOverPopupTree));
+        const restartButton = popup.getChildByName("restartButton");
+        restartButton.interactive = true;
+        restartButton.once("pointerdown", callback);
+    }
+
+    removeGameOverPopup() {
+        this.removeChildren();
+    }
 }

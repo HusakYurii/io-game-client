@@ -56,9 +56,13 @@ export class Controller {
     setViewLayers(layers) {
         this.view.setLaters(layers);
     }
-    
+
     createGameOverPopup(callback) {
         this.view.createGameOverPopup(callback);
+    }
+
+    removeGameOverPopup() {
+        this.view.removeGameOverPopup();
     }
 
     createLoginPopup(callback) {
@@ -71,6 +75,10 @@ export class Controller {
 
     createGameBackground() {
         this.view.createGameBackground();
+    }
+
+    createGameWorld() {
+        this.view.createGameWorld();
     }
 
     turnOnControls() {
@@ -103,6 +111,13 @@ export class Controller {
         this.model.deactivatePlayer();
 
         return { ...playerData, ...mousePos, activate };
+    }
+
+    cleanUpGame() {
+        this.view.cleanUpCamera();
+        this.view.cleanUpLayers();
+        this.model.cleanUpData();
+        TWEEN.removeAll();
     }
 
     update(ticker, dt) {
@@ -162,6 +177,9 @@ export class Controller {
     }
 
     connectPlayer(callback) {
+        if (!this.socket.connected) {
+            this.socket.connect();
+        }
         this.socket.emit(CONNECTION_CONSTANTS.CONNECT_PLAYER);
         this.socket.on(CONNECTION_CONSTANTS.PLAYER_CONNECTED, this.onPlayerConnected.bind(this, callback));
     }

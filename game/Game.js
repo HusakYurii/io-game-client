@@ -63,8 +63,17 @@ export class Game extends Application {
     }
 
     // ============== connection ===============
+    cleanUpGame() {
+        this.ticker.remove(this.controller.update, this.controller);
+        this.controller.cleanUpGame();
+    }
+
     createGameOverPopup(callback) {
         this.controller.createGameOverPopup(callback);
+    }
+
+    removeGameOverPopup() {
+        this.controller.removeGameOverPopup();
     }
 
     createLoginPopup(callback) {
@@ -79,6 +88,10 @@ export class Game extends Application {
         this.controller.createGameBackground();
     }
 
+    createGameWorld() {
+        this.controller.createGameWorld();
+    }
+
     turnOnControls() {
         this.controller.turnOnControls();
     }
@@ -88,7 +101,6 @@ export class Game extends Application {
     }
 
     startGameLoop() {
-
         this.ticker.add(this.controller.update.bind(this.controller, this.ticker));
     }
 }

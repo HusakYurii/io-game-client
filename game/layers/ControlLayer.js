@@ -18,6 +18,13 @@ export class ControlLayer extends AbstractLayer {
         this.onAtivatedCb = () => { };
     }
 
+    cleanupLayer() {
+        this.joystick = null;
+        this.activateBtn = null;
+        this.isJoystickCaptured = false;
+        this.pointerIds = [];
+    }
+
     resize(sizes) {
         this.currViewportSizes = sizes;
         if (this.joystick && this.activateBtn) {
@@ -31,7 +38,7 @@ export class ControlLayer extends AbstractLayer {
 
         this.activateBtn = this.addChild(...Builder.fromConfig(this.config.activateButton));
         this.activateBtn.interactive = true;
-    
+
         this.updateControlsPos();
 
         this.onDirChangedCb = onDirChanged;
@@ -47,10 +54,12 @@ export class ControlLayer extends AbstractLayer {
 
     removeControls() {
         this.joystick.removeAllListeners();
-        this.removeChild(this.joystick);
+        this.joystick = null;
 
         this.activateBtn.removeAllListeners();
-        this.removeChild(this.activateBtn);
+        this.activateBtn = null;
+
+        this.removeChildren();
 
         this.onDirChangedCb = () => { };
         this.onAtivatedCb = () => { };

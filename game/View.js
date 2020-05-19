@@ -15,9 +15,7 @@ export class View extends Container {
      */
     setTextures(textures) {
         Object.values(this.viewLayers)
-            .forEach((layer) => {
-                layer.setTextures(textures);
-            });
+            .forEach((layer) => layer.setTextures(textures));
     }
 
     /**
@@ -38,9 +36,18 @@ export class View extends Container {
         this.zoomLayers(this.cameraAdjustmentScls[0]);
 
         Object.values(this.viewLayers)
-            .forEach((layer) => {
-                layer.resize(sizes);
-            });
+            .forEach((layer) => layer.resize(sizes));
+    }
+
+    cleanUpLayers() {
+        Object.values(this.viewLayers)
+            .forEach((layer) => layer.cleanupLayer());
+    }
+
+    cleanUpCamera() {
+        this.moveLayers({ from: {x: 0, y:0 }, to: {x: 0, y:0 } });
+        this.ratiosAllowedToOccupy = [0.8, 0.75, 0.7, 0.65, 0.6, 0.5, 0.45, 0.4];
+        this.cameraAdjustmentScls = [1.55, 1.4, 1.3, 1.15, 1, 0.8, 0.7, 0.6, 0.5, 0.45];
     }
 
     getLayerByName(layerName) {
@@ -51,8 +58,16 @@ export class View extends Container {
         this.getLayerByName("BackgroundLayer").createBackground();
     }
 
+    createGameWorld() {
+        this.getLayerByName("GameLayer").createGameWorld();
+    }
+
     createGameOverPopup(callback) {
         this.getLayerByName("UILayer").createGameOverPopup(callback);
+    }
+
+    removeGameOverPopup() {
+        this.getLayerByName("UILayer").removeGameOverPopup();
     }
 
     createLoginPopup(callback) {
@@ -78,9 +93,7 @@ export class View extends Container {
      */
     updateLayers(dt, gameModel) {
         Object.values(this.viewLayers)
-            .forEach((layer) => {
-                layer.updateLayer(dt, gameModel)
-            });
+            .forEach((layer) => layer.updateLayer(dt, gameModel));
     }
 
     /**
