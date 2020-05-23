@@ -12,7 +12,7 @@ export class Player extends Item {
         this.gravityTime = 0;
         this.coolDownTimer = 0;
         this.coolDownTime = 0;
-        this.gravityRadius = 0;
+        this.gravityR = 0;
 
         this.gravityRing = this.addChild(
             Builder.createSprite({
@@ -43,8 +43,8 @@ export class Player extends Item {
 
     updateGravityAimation() {
         this.gravityRing.visible = this.isActivated;
-        this.gravityRing.width = this.gravityRadius * 2;
-        this.gravityRing.height = this.gravityRadius * 2;
+        this.gravityRing.width = this.gravityR * 2;
+        this.gravityRing.height = this.gravityR * 2;
     }
 
     updateCoolDownAnimation() {
@@ -76,7 +76,7 @@ export class Player extends Item {
         this.gravityTime = data.gravityTime;
         this.coolDownTimer = data.coolDownTimer;
         this.coolDownTime = data.coolDownTime;
-        this.gravityRadius = data.gravityRadius;
+        this.gravityR = data.gravityR;
     }
 
     /**
