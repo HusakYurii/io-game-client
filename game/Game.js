@@ -64,7 +64,7 @@ export class Game extends Application {
 
     // ============== connection ===============
     cleanUpGame() {
-        this.ticker.remove(this.controller.update, this.controller);
+        this.ticker.remove(this.gameLoop, this);
         this.controller.cleanUpGame();
     }
 
@@ -101,6 +101,10 @@ export class Game extends Application {
     }
 
     startGameLoop() {
-        this.ticker.add(this.controller.update.bind(this.controller, this.ticker));
+        this.ticker.add(this.gameLoop, this);
+    }
+
+    gameLoop(dt) {
+        this.controller.update(this.ticker, dt);
     }
 }
