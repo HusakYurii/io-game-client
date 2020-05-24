@@ -36,31 +36,34 @@ export class GameLayer extends AbstractLayer {
 
     updateLayer(dt, gameModel) {
         const { playerId } = gameModel.getPlayerData();
-        const data = gameModel.getServerUpdates();
+        const serverUpdate = gameModel.getServerUpdates();
 
         /**
-         * In the case of if the ping was too long, we might not have the data
+         * In the case of if the ping was too long, we might not have the serverUpdate
          */
-        if (!data) {
+        if (!serverUpdate) {
             return;
         }
 
-        this.deleteFromGroup(data.items, "items");
-        this.deleteFromGroup(data.players, "players");
+        this.deleteFromGroup(serverUpdate.items, "items");
+        this.deleteFromGroup(serverUpdate.players, "players");
 
-        data.items.forEach((itemData) => {
+        serverUpdate.items.forEach((itemData) => {
             if (this.items[itemData.id]) this.updateElement(itemData, "items");
             else this.createElement(itemData, "items");
         });
 
-        data.players.forEach((playerData) => {
+        serverUpdate.players.forEach((playerData) => {
             if (this.players[playerData.id]) this.updateElement(playerData, "players");
             else this.createPlayer(playerData, playerId);
         });
 
-        if (!gameModel.hasPlayer()) {
-            gameModel.setPlayer(this.players[playerId]);
-        }
+        /**
+         * TODO FIX it. it should be done by camera
+         * As camera moves layer, rest player to be at the center for camera effect
+         */
+        const player = this.players[playerId];
+        player && player.position.set(0, 0);
     }
 
     createPlayer(data, selfId) {

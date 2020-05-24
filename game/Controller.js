@@ -94,7 +94,7 @@ export class Controller {
     }
 
     onClick({ x, y }) {
-        this.model.updatePlayerDir({
+        this.model.setJoystickDir({
             x: Math.round(x),
             y: Math.round(y)
         });
@@ -105,10 +105,9 @@ export class Controller {
     }
 
     preparePayload() {
-        const mousePos = this.model.getPlayerDir();
+        const mousePos = this.model.getJoysticrDir();
         const playerData = this.model.getPlayerData();
-        const activate = this.model.activate;
-        this.model.deactivatePlayer();
+        const activate = this.model.isPlayerActive();
 
         return { ...playerData, ...mousePos, activate };
     }
@@ -123,19 +122,24 @@ export class Controller {
     update(ticker, dt) {
         TWEEN.update(ticker.lastTime);
 
-        this.view.updateLayers(dt, this.model);
         this.view.updateCamera(dt, this.model);
+        this.view.updateLayers(dt, this.model);
 
-        this.model.resetPlayerPos();
+        this.model.removeUsedServerUpdates();
 
         if (this.model.isGameOver) {
             return;
         }
+
         /*
          * All Player last actions are being sent once at the tick
          * It also helps to avoid data overloading
          */
         this.sendPlayerUpdates(this.preparePayload());
+        /* 
+         * after sending data, deactivate player gravity state
+         */
+        this.model.deactivatePlayer();
     }
 
     // ============== connection ===============
@@ -155,9 +159,7 @@ export class Controller {
 
     onServerUpdates(payload) {
         const parsed = JSON.parse(payload);
-
         this.model.setServerUpdates(parsed);
-        this.model.updatePlayerPos();
     }
 
 

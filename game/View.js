@@ -45,7 +45,7 @@ export class View extends Container {
     }
 
     cleanUpCamera() {
-        this.moveLayers({ from: {x: 0, y:0 }, to: {x: 0, y:0 } });
+        this.moveLayers({ from: { x: 0, y: 0 }, to: { x: 0, y: 0 } });
         this.ratiosAllowedToOccupy = [0.8, 0.75, 0.7, 0.65, 0.6, 0.5, 0.45, 0.4];
         this.cameraAdjustmentScls = [1.55, 1.4, 1.3, 1.15, 1, 0.8, 0.7, 0.6, 0.5, 0.45];
     }
@@ -103,18 +103,28 @@ export class View extends Container {
      * @param {Model} gameModel 
      */
     updateCamera(dt, gameModel) {
-        if (!gameModel.isGameStarted) {
+        if (!gameModel.isGameStarted || gameModel.isGameOver) {
+            return;
+        }
+        
+        const playerData = gameModel.getPlayerData();
+        const serverUpdate = gameModel.getServerUpdates();
+        if (!serverUpdate) {
             return;
         }
 
+        const { x, y, r } = serverUpdate.players.find((player) => {
+            return player.id === playerData.playerId;
+        });
+        const playerPos = { x, y };
+        const playerWidth = r * 2;
+
         /* To zoom view relative to a player */
         const minViewportSize = Math.min(gameModel.viewportSizes.width, gameModel.viewportSizes.height);
-        const player = gameModel.getPlayer();
-
-        this.checkBoundaries(minViewportSize, player.view.width);
+        this.checkBoundaries(minViewportSize, playerWidth);
 
         /* To move layers relative to a player */
-        this.moveLayers(gameModel.getPlayerPos());
+        this.moveLayers({ from: playerPos });
     }
 
     moveLayers({ from, to }) {

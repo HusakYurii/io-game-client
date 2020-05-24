@@ -21,7 +21,7 @@ export class Model {
             from: { x: 0, y: 0 },
             to: { x: 0, y: 0 }
         };
-        this.playerDir = { x: 0, y: 0 };
+        this.joysticDir = { x: 0, y: 0 };
         this.activate = false;
 
         /*
@@ -33,7 +33,7 @@ export class Model {
         this.serverUpdates = [];
         this.serverStartTime = -1;
     }
-    
+
     cleanUpData() {
         this.isGameStarted = false;
         this.isGameOver = false;
@@ -46,7 +46,7 @@ export class Model {
             from: { x: 0, y: 0 },
             to: { x: 0, y: 0 }
         };
-        this.playerDir = { x: 0, y: 0 };
+        this.joysticDir = { x: 0, y: 0 };
         this.activate = false;
 
         this.gameStartTime = -1;
@@ -70,22 +70,8 @@ export class Model {
         this.name = name;
     }
 
-    updatePlayerDir(data) {
-        this.playerDir = { x: data.x, y: data.y };
-    }
-
-    updatePlayerPos() {
-        const find = (list = [], id) => {
-            return list.find((item) => item.id === id);
-        };
-
-        const [curr = {}, next = {}] = this.serverUpdates;
-
-        let currPos = find(curr.players, this.playerId) || { x: 0, y: 0 };
-        let nextPos = find(next.players, this.playerId) || { x: currPos.x, y: currPos.y };
-
-        this.playerPos.from = { x: currPos.x, y: currPos.y };
-        this.playerPos.to = { x: nextPos.x, y: nextPos.y };
+    setJoystickDir(data) {
+        this.joysticDir = { x: data.x, y: data.y };
     }
 
     setServerUpdates(data) {
@@ -108,31 +94,12 @@ export class Model {
         }
     }
 
-    /**
-     * Reset player pos back to 0, to make camera effect while game and bg are moving
-     */
-    resetPlayerPos() {
-        if (!this.player) {
-            return;
-        }
-
-        this.player.position.set(0, 0);
-    }
-
-    hasPlayer() {
-        return !!this.player
-    }
-
-    setPlayer(player) {
-        this.player = player;
-    }
-
-    getPlayer() {
-        return this.player;
-    }
-
     getServerUpdates() {
-        return this.serverUpdates.shift();
+        return this.serverUpdates[0];
+    }
+
+    removeUsedServerUpdates() {
+        this.serverUpdates.shift();
     }
 
     activatePlayer() {
@@ -141,6 +108,10 @@ export class Model {
 
     deactivatePlayer() {
         this.activate = false;
+    }
+
+    isPlayerActive() {
+        return this.activate;
     }
 
     /**
@@ -168,11 +139,7 @@ export class Model {
         }
     }
 
-    getPlayerPos() {
-        return this.playerPos;
-    }
-
-    getPlayerDir() {
-        return this.playerDir;
+    getJoysticrDir() {
+        return this.joysticDir;
     }
 }
