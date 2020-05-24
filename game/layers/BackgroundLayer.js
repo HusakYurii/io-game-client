@@ -16,10 +16,9 @@ export class BackgroundLayer extends AbstractLayer {
     }
 
     /**
-     * @param {{x: number; y: number}} from - player curr pos
-     * @param {{x: number; y: number}}  to - player next pos
+     * @param {{x: number; y: number}}  newPos - player next pos
      */
-    move(from, to) {
-        this.gameWorldBg.position.set(from.x * -1, from.y * -1)
+    move(newPos) {
+        this.gameWorldBg.position.set(newPos.x, newPos.y);
     }
 }

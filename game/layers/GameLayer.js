@@ -36,7 +36,7 @@ export class GameLayer extends AbstractLayer {
 
     updateLayer(dt, gameModel) {
         const { playerId } = gameModel.getPlayerData();
-        const serverUpdate = gameModel.getServerUpdates();
+        const [serverUpdate] = gameModel.getServerUpdates();
 
         /**
          * In the case of if the ping was too long, we might not have the serverUpdate
@@ -116,11 +116,10 @@ export class GameLayer extends AbstractLayer {
     }
 
     /**
-     * @param {{x: number; y: number}} from - player curr pos
-     * @param {{x: number; y: number}}  to - player next pos
+     * @param {{x: number; y: number}} newPos - player next pos
      */
-    move(from, to) {
-        this.gameWorld.position.set(from.x * -1, from.y * -1);
-        this.cameraBounds.position.set(from.x * -1, from.y * -1);
+    move(newPos) {
+        this.gameWorld.position.set(newPos.x, newPos.y);
+        this.cameraBounds.position.set(newPos.x, newPos.y);
     }
 }

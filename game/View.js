@@ -106,9 +106,9 @@ export class View extends Container {
         if (!gameModel.isGameStarted || gameModel.isGameOver) {
             return;
         }
-        
+
         const playerData = gameModel.getPlayerData();
-        const serverUpdate = gameModel.getServerUpdates();
+        const [serverUpdate] = gameModel.getServerUpdates();
         if (!serverUpdate) {
             return;
         }
@@ -116,7 +116,7 @@ export class View extends Container {
         const { x, y, r } = serverUpdate.players.find((player) => {
             return player.id === playerData.playerId;
         });
-        const playerPos = { x, y };
+        const newPos = { x: x * -1, y: y * -1 };
         const playerWidth = r * 2;
 
         /* To zoom view relative to a player */
@@ -124,12 +124,12 @@ export class View extends Container {
         this.checkBoundaries(minViewportSize, playerWidth);
 
         /* To move layers relative to a player */
-        this.moveLayers({ from: playerPos });
+        this.moveLayers(newPos);
     }
 
-    moveLayers({ from, to }) {
-        this.getLayerByName("BackgroundLayer").move(from, to);
-        this.getLayerByName("GameLayer").move(from, to);
+    moveLayers(newPos) {
+        this.getLayerByName("BackgroundLayer").move(newPos);
+        this.getLayerByName("GameLayer").move(newPos);
     }
 
     checkBoundaries(minViewportSize, playerWidth) {

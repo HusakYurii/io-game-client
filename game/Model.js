@@ -1,3 +1,5 @@
+const { GAME_CONSTANTS } = require("../../shared/Constants.js");
+
 export class Model {
     constructor(gameConfig) {
         /*
@@ -28,7 +30,7 @@ export class Model {
          * Data related to server/render updates
          */
         this.gameStartTime = -1;
-        this.gameRenderDelay = (1000 * 4) / 60 | 0;
+        this.gameRenderDelay = GAME_CONSTANTS.GAME_RENDER_DELAY;
 
         this.serverUpdates = [];
         this.serverStartTime = -1;
@@ -50,7 +52,7 @@ export class Model {
         this.activate = false;
 
         this.gameStartTime = -1;
-        this.gameRenderDelay = (1000 * 4) / 60 | 0;
+        this.gameRenderDelay = GAME_CONSTANTS.GAME_RENDER_DELAY;;
 
         this.serverUpdates = [];
         this.serverStartTime = -1;
@@ -95,7 +97,7 @@ export class Model {
     }
 
     getServerUpdates() {
-        return this.serverUpdates[0];
+        return this.serverUpdates;
     }
 
     removeUsedServerUpdates() {
