@@ -14,7 +14,6 @@ export class UILayer extends AbstractLayer {
         this.addChild(...popup);
 
         this.inputs.nameInput = this.getChildByName("nameInput");
-        this.inputs.roomIdInput = this.getChildByName("roomIdInput");
         this.inputs.nameInput.on("input", this.onPlayerInput);
 
         this.confirmBtn = this.getChildByName("button");
@@ -24,7 +23,6 @@ export class UILayer extends AbstractLayer {
     removeLoginPopup() {
         this.inputs.nameInput.off("input", this.onPlayerInput);
         this.inputs.nameInput.destroy();
-        this.inputs.roomIdInput.destroy();
         this.inputs = {};
         this.confirmBtn = null;
         this.removeChildren();
@@ -39,18 +37,23 @@ export class UILayer extends AbstractLayer {
     disableInputs() {
         this.confirmBtn.interactive = false;
         this.inputs.nameInput.disabled = true;
-        this.inputs.roomIdInput.disabled = true;
     }
 
     unPlayerConfirm(callback, event) {
         event.stopPropagation();
         this.disableInputs();
-        const { nameInput, roomIdInput } = this.inputs;
 
         callback({
-            name: nameInput.htmlInput.value,
-            roomId: roomIdInput.htmlInput.value
+            name: this.inputs.nameInput.htmlInput.value,
+            roomId: ""
         });
+    }
+
+    createConnectionLostPopup(callback) {
+        const popup = this.addChild(...Builder.fromConfig(this.config.connectionLostPopupTree));
+        const reconnectButton = popup.getChildByName("reconnectButton");
+        reconnectButton.interactive = true;
+        reconnectButton.once("pointerdown", callback);
     }
 
     createGameOverPopup(callback) {
@@ -60,7 +63,7 @@ export class UILayer extends AbstractLayer {
         restartButton.once("pointerdown", callback);
     }
 
-    removeGameOverPopup() {
+    cleanupLayer() {
         this.removeChildren();
     }
 }

@@ -9,6 +9,7 @@ export class Game extends Application {
         super(params);
 
         this.controller = controller;
+        this._onConnectionLost = () => { };
     }
 
     init() {
@@ -58,22 +59,31 @@ export class Game extends Application {
         this.controller.setUpdatesConnection(callback);
     }
 
+    set onConnectionLost(callback) {
+        this._onConnectionLost = callback;
+    }
+
+    get onConnectionLost() {
+        return this._onConnectionLost;
+    }
+
+    // ============== connection ===============
+
     setGameOverStatus() {
         this.controller.setGameOverStatus();
     }
 
-    // ============== connection ===============
     cleanUpGame() {
         this.ticker.remove(this.gameLoop, this);
         this.controller.cleanUpGame();
     }
 
-    createGameOverPopup(callback) {
-        this.controller.createGameOverPopup(callback);
+    createConnectionLostPopup(callback) {
+        this.controller.createConnectionLostPopup(callback);
     }
 
-    removeGameOverPopup() {
-        this.controller.removeGameOverPopup();
+    createGameOverPopup(callback) {
+        this.controller.createGameOverPopup(callback);
     }
 
     createLoginPopup(callback) {

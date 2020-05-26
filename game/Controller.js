@@ -57,12 +57,12 @@ export class Controller {
         this.view.setLaters(layers);
     }
 
-    createGameOverPopup(callback) {
-        this.view.createGameOverPopup(callback);
+    createConnectionLostPopup(callback) {
+        this.view.createConnectionLostPopup(callback);
     }
 
-    removeGameOverPopup() {
-        this.view.removeGameOverPopup();
+    createGameOverPopup(callback) {
+        this.view.createGameOverPopup(callback);
     }
 
     createLoginPopup(callback) {

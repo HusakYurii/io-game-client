@@ -7,17 +7,14 @@ export class GameOverState extends AbstractState {
      */
     constructor(stateMachine) {
         super("GameOverState", stateMachine);
-
-        this.onRestartGame = this.onRestartGame.bind(this);
     }
 
     onEnterState() {
-        this.stateMachine.target.createGameOverPopup(this.onRestartGame);
+        this.stateMachine.target.createGameOverPopup(this.restartGame.bind(this));
     }
 
-    onRestartGame() {
+    restartGame() {
         this.stateMachine.target.disconnectPlayer();
-        this.stateMachine.target.removeGameOverPopup();
         this.stateMachine.target.cleanUpGame();
 
         this.stateMachine.target.connectPlayer(() => {

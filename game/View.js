@@ -62,12 +62,12 @@ export class View extends Container {
         this.getLayerByName("GameLayer").createGameWorld();
     }
 
-    createGameOverPopup(callback) {
-        this.getLayerByName("UILayer").createGameOverPopup(callback);
+    createConnectionLostPopup(callback) {
+        this.getLayerByName("UILayer").createConnectionLostPopup(callback);
     }
 
-    removeGameOverPopup() {
-        this.getLayerByName("UILayer").removeGameOverPopup();
+    createGameOverPopup(callback) {
+        this.getLayerByName("UILayer").createGameOverPopup(callback);
     }
 
     createLoginPopup(callback) {
