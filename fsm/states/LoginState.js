@@ -15,8 +15,8 @@ export class LoginState extends AbstractState {
         window.dispatchEvent(new Event("resize")); // FIXME
     }
 
-    onPlayerInput(data) {
-        this.stateMachine.target.loginPlayer(data, this.onPlayerLoggedin.bind(this));
+    onPlayerInput(inputs) {
+        this.stateMachine.target.loginPlayer(this.onPlayerLoggedin.bind(this), inputs);
     }
 
     onPlayerLoggedin() {

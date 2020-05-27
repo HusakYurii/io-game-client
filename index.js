@@ -1,11 +1,12 @@
-import { Game, Controller, Model, View } from "./game"
+import { Game, Storage, Scene } from "./game"
 import { gameConfig } from "./configs";
 
-const { application } = gameConfig;
-const game = new Game(application, new Controller(new Model(gameConfig), new View()));
+const game = new Game(gameConfig.application);
+game.setStorage(new Storage(gameConfig));
+game.setScene(new Scene());
 
 import { ResizeManager } from "./libs/ResizeManager.js";
-const resizeManager = new ResizeManager(game, application);
+const resizeManager = new ResizeManager(game, gameConfig.application);
 
 import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig } from "./configs";
 import { BackgroundLayer, ControlLayer, GameLayer, UILayer } from "./game/layers";

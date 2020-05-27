@@ -1,6 +1,6 @@
 const { GAME_CONSTANTS } = require("../../shared/Constants.js");
 
-export class Model {
+export class Storage {
     constructor(gameConfig) {
         /*
          * General data

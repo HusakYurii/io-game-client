@@ -1,6 +1,6 @@
 import { Container } from "../libs/PixiCustomized.js";
 
-export class View extends Container {
+export class Scene extends Container {
     constructor() {
         super();
         this.viewTextures = {};
