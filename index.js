@@ -1,7 +1,11 @@
-import { Game, Storage, Scene } from "./game"
+import { Application } from "./libs/PixiCustomized.js";
+
+import { Game, Storage, Scene } from "./game";
 import { gameConfig } from "./configs";
 
-const game = new Game(gameConfig.application);
+const game = new Game();
+
+game.setPixiApplication(new Application(gameConfig.application));
 game.setStorage(new Storage(gameConfig));
 game.setScene(new Scene());
 

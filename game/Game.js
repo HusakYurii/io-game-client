@@ -1,21 +1,28 @@
-import { Application } from "../libs/PixiCustomized.js";
 import { TWEEN } from "../libs/Tween.js";
 
 const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
 
-export class Game extends Application {
+export class Game {
+    constructor() {
 
-    constructor(params) {
-        super(params);
-
+        this.app = null;
         this.storage = null;
         this.scene = null;
         this.socket = null;
+
+        this.components = {};
 
         this._onConnectionLost = () => { };
 
         this.onClick = this.onClick.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
+    }
+
+    /**
+     * @param {PIXI.Application} app 
+     */
+    setPixiApplication(app) {
+        this.app = app
     }
 
     /**
@@ -58,8 +65,8 @@ export class Game extends Application {
         this.initSocket(io);
         this.defineDevice();
 
-        this.stage.addChild(this.scene);
-        document.body.appendChild(this.view);
+        this.app.stage.addChild(this.scene);
+        document.body.appendChild(this.app.view);
     }
 
     setViewLayers(layers) {
@@ -67,10 +74,10 @@ export class Game extends Application {
     }
 
     loadGameAssets(callback) {
-        this.loader.add(this.storage.gameConfig.assets);
+        this.app.loader.add(this.storage.gameConfig.assets);
         // this.loader.add(this.storage.gameConfig.spritesheets);
 
-        this.loader.load(this.onAssetsLoaded.bind(this, callback));
+        this.app.loader.load(this.onAssetsLoaded.bind(this, callback));
     }
 
     onAssetsLoaded(callback, loader, resources) {
@@ -80,7 +87,7 @@ export class Game extends Application {
     }
 
     onResize(data) {
-        this.renderer.resize(data.width, data.height);
+        this.app.renderer.resize(data.width, data.height);
         this.storage.updateViewportSizes(data);
         this.scene.resize(data);
     }
@@ -155,7 +162,7 @@ export class Game extends Application {
     }
 
     cleanUpGame() {
-        this.ticker.remove(this.gameLoop, this);
+        this.app.ticker.remove(this.gameLoop, this);
         this.scene.cleanUpCamera();
         this.scene.cleanUpLayers();
         this.storage.cleanUpData();
@@ -214,11 +221,11 @@ export class Game extends Application {
     }
 
     startGameLoop() {
-        this.ticker.add(this.gameLoop, this);
+        this.app.ticker.add(this.gameLoop, this);
     }
 
     gameLoop(dt) {
-        TWEEN.update(this.ticker.lastTime);
+        TWEEN.update(this.app.ticker.lastTime);
 
         this.scene.updateCamera(dt, this.storage);
         this.scene.updateLayers(dt, this.storage);
