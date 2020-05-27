@@ -65,7 +65,7 @@ export class Game {
         this.initSocket(io);
         this.defineDevice();
 
-        this.app.stage.addChild(this.scene);
+        this.app.stage.addChild(this.scene.view);
         document.body.appendChild(this.app.view);
     }
 
@@ -89,7 +89,7 @@ export class Game {
     onResize(data) {
         this.app.renderer.resize(data.width, data.height);
         this.storage.updateViewportSizes(data);
-        this.scene.resize(data);
+        this.scene.resizeScene(data);
     }
 
     // ============== connection ===============

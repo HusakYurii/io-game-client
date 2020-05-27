@@ -1,8 +1,10 @@
 import { Container } from "../libs/PixiCustomized.js";
 
-export class Scene extends Container {
+export class Scene {
     constructor() {
-        super();
+        
+        this.view = new Container();
+
         this.viewTextures = {};
         this.viewLayers = {};
         this.sortableChildren = true;
@@ -24,19 +26,19 @@ export class Scene extends Container {
     setLaters(layers) {
         layers.forEach((layer) => {
             this.viewLayers[layer.name] = layer;
-            this.addChild(layer);
+            this.view.addChild(layer);
         });
     }
 
-    resize(sizes) {
+    resizeScene(sizes) {
         const { scl, width, height } = sizes;
-        this.position.set(width / 2, height / 2);
-        this.scale.set(scl);
+        this.view.position.set(width / 2, height / 2);
+        this.view.scale.set(scl);
 
         this.zoomLayers(this.cameraAdjustmentScls[0]);
 
         Object.values(this.viewLayers)
-            .forEach((layer) => layer.resize(sizes));
+            .forEach((layer) => layer.resizeLayer(sizes));
     }
 
     cleanUpLayers() {
@@ -55,35 +57,35 @@ export class Scene extends Container {
     }
 
     createGameBackground() {
-        this.getLayerByName("BackgroundLayer").createBackground();
+        this.viewLayers["BackgroundLayer"].createBackground();
     }
 
     createGameWorld() {
-        this.getLayerByName("GameLayer").createGameWorld();
+        this.viewLayers["GameLayer"].createGameWorld();
     }
 
     createConnectionLostPopup(callback) {
-        this.getLayerByName("UILayer").createConnectionLostPopup(callback);
+        this.viewLayers["UILayer"].createConnectionLostPopup(callback);
     }
 
     createGameOverPopup(callback) {
-        this.getLayerByName("UILayer").createGameOverPopup(callback);
+        this.viewLayers["UILayer"].createGameOverPopup(callback);
     }
 
     createLoginPopup(callback) {
-        this.getLayerByName("UILayer").createLoginPopup(callback);
+        this.viewLayers["UILayer"].createLoginPopup(callback);
     }
 
     removeLoginPopup() {
-        this.getLayerByName("UILayer").removeLoginPopup();
+        this.viewLayers["UILayer"].removeLoginPopup();
     }
 
     turnOnControls(onMove, onActivate) {
-        this.getLayerByName("ControlLayer").setControls(onMove, onActivate);
+        this.viewLayers["ControlLayer"].turnOnControls(onMove, onActivate);
     }
 
     turnOffControls() {
-        this.getLayerByName("ControlLayer").removeControls();
+        this.viewLayers["ControlLayer"].turnOffControls();
     }
 
     /**
@@ -128,13 +130,13 @@ export class Scene extends Container {
     }
 
     moveLayers(newPos) {
-        this.getLayerByName("BackgroundLayer").move(newPos);
-        this.getLayerByName("GameLayer").move(newPos);
+        this.viewLayers["BackgroundLayer"].move(newPos);
+        this.viewLayers["GameLayer"].move(newPos);
     }
 
     checkBoundaries(minViewportSize, playerWidth) {
         /* the same as player.worldTransform.a you can use any of this ways */
-        const currScale = this.cameraAdjustmentScls[0] * this.scale.x;
+        const currScale = this.cameraAdjustmentScls[0] * this.view.scale.x;
         const occupiedView = minViewportSize - (playerWidth * currScale);
         const needToZoom = occupiedView < minViewportSize * this.ratiosAllowedToOccupy[0];
 
@@ -152,7 +154,7 @@ export class Scene extends Container {
     }
 
     zoomLayers(scl = 1) {
-        this.getLayerByName("BackgroundLayer").scale.set(scl);
-        this.getLayerByName("GameLayer").scale.set(scl);
+        this.viewLayers["BackgroundLayer"].scale.set(scl);
+        this.viewLayers["GameLayer"].scale.set(scl);
     }
 }
