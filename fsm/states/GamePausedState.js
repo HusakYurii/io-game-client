@@ -3,10 +3,10 @@ import { AbstractState } from "./AbstractState.js";
 export class GamePausedState extends AbstractState {
 
     /**
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(stateMachine) {
-        super("GamePausedState", stateMachine);
+    constructor(fsm) {
+        super("GamePausedState", fsm);
     }
 
     onEnterState() { }

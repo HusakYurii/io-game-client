@@ -1,21 +1,17 @@
 import { TWEEN } from "../libs/Tween.js";
 
-const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
-
 export class Game {
     constructor() {
 
         this.app = null;
         this.storage = null;
         this.scene = null;
-        this.socket = null;
 
         this.components = {};
 
-        this._onConnectionLost = () => { };
-
         this.onClick = this.onClick.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
+        this.onGameLoop = () => { };
     }
 
     /**
@@ -39,31 +35,18 @@ export class Game {
         this.scene = scene;
     }
 
-    /**
-     * @param {{[key: string]: Resource}} resources 
-     */
-    parseResources(resources) {
-        const { assets = [], spritesheets = [] } = this.storage.gameConfig;
-        const textures = {};
-
-        assets.forEach(({ name }) => {
-            textures[name] = resources[name].texture
+    addComponents(components) {
+        components.forEach(({ name, component }) => {
+            this.components[name] = component;
         });
+    }
 
-        spritesheets.forEach(({ name }) => {
-            Object.entries(resources[name].textures)
-                .forEach(([key, texture]) => {
-                    const [name] = key.split(".");
-                    textures[name] = texture;
-                });
-        });
-
-        return textures;
+    getComponent(name) {
+        return this.components[name];
     }
 
     init() {
-        this.initSocket(io);
-        this.defineDevice();
+        this.storage.isMobile = this.defineDevice();
 
         this.app.stage.addChild(this.scene.view);
         document.body.appendChild(this.app.view);
@@ -74,88 +57,21 @@ export class Game {
     }
 
     loadGameAssets(callback) {
-        this.app.loader.add(this.storage.gameConfig.assets);
-        // this.loader.add(this.storage.gameConfig.spritesheets);
+        this.app.loader.add(this.storage.gameConfig.sprites);
 
-        this.app.loader.load(this.onAssetsLoaded.bind(this, callback));
+        this.app.loader.load((loader, resources) => {
+            const parser = this.getComponent("resourcesParser");
+            const parsedData = parser.parseResources(resources);
+            this.scene.setTextures(parsedData);
+            callback();
+        });
     }
 
-    onAssetsLoaded(callback, loader, resources) {
-        const parsedData = this.parseResources(resources);
-        this.scene.setTextures(parsedData);
-        callback();
+    onResize(sizes) {
+        this.app.renderer.resize(sizes.width, sizes.height);
+        this.storage.updateViewportSizes(sizes);
+        this.scene.resizeScene(sizes);
     }
-
-    onResize(data) {
-        this.app.renderer.resize(data.width, data.height);
-        this.storage.updateViewportSizes(data);
-        this.scene.resizeScene(data);
-    }
-
-    // ============== connection ===============
-    initSocket(socket) {
-        this.socket = socket(this.storage.getServerUrl());
-    }
-
-    setUpdatesConnection(callback) {
-        this.storage.updateGameStartTime();
-        this.socket.on(CONNECTION_CONSTANTS.SERVER_UPDATES, this.onServerUpdates.bind(this));
-        this.socket.on(CONNECTION_CONSTANTS.GAME_OVER, callback);
-    }
-
-    sendPlayerUpdates(data) {
-        this.socket.emit(CONNECTION_CONSTANTS.PLAYER_UPDATES, JSON.stringify(data));
-    }
-
-    onServerUpdates(payload) {
-        const parsed = JSON.parse(payload);
-        this.storage.setServerUpdates(parsed);
-    }
-
-
-    loginPlayer(callback, inputs) {
-        const { playerId } = this.storage.getPlayerData();
-
-        const playload = { id: playerId, ...inputs };
-
-        this.socket.emit(CONNECTION_CONSTANTS.LOGIN_PLAYER, JSON.stringify(playload));
-        this.socket.on(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, this.onPlayerLoggedin.bind(this, callback));
-    }
-
-    onPlayerLoggedin(callback, payload) {
-        const parsed = JSON.parse(payload);
-        this.storage.updatePlayerData(parsed);
-        callback();
-    }
-
-    connectPlayer(callback) {
-        if (!this.socket.connected) {
-            this.socket.connect();
-        }
-        this.socket.emit(CONNECTION_CONSTANTS.CONNECT_PLAYER);
-        this.socket.on(CONNECTION_CONSTANTS.PLAYER_CONNECTED, this.onPlayerConnected.bind(this, callback));
-    }
-
-    disconnectPlayer() {
-        this.socket.close();
-        this.socket.removeAllListeners();
-    }
-
-    onPlayerConnected(callback, payload) {
-        const parsed = JSON.parse(payload);
-        this.storage.updatePlayerData(parsed);
-        callback();
-    }
-
-    set onConnectionLost(callback) {
-        this._onConnectionLost = callback;
-    }
-
-    get onConnectionLost() {
-        return this._onConnectionLost;
-    }
-
-    // ============== connection ===============
 
     setGameOverStatus() {
         this.storage.isGameOver = true;
@@ -236,13 +152,14 @@ export class Game {
             return;
         }
 
-        /*
-         * All Player last actions are being sent once at the tick
-         * It also helps to avoid data overloading
+        /**
+         * Call callback which is set by FSM to process game data
          */
-        this.sendPlayerUpdates(this.preparePayload());
+        this.onGameLoop();
+
         /* 
-         * after sending data, deactivate player gravity state
+         * After sending data, deactivate player gravity state
+         * to avoid sending it one more time
          */
         this.storage.deactivatePlayer();
     }
@@ -250,7 +167,7 @@ export class Game {
     defineDevice() {
         const userAgent = Game.getUserAgent();
         const regExpList = Game.getRegExpList();
-        this.storage.isMobile = regExpList.some((regExp) => {
+        return regExpList.some((regExp) => {
             return regExp.test(userAgent);
         });
     }

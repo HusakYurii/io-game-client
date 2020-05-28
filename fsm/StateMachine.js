@@ -2,10 +2,10 @@
 export class StateMachine {
 
     /**
-     * @param {object} target - target object to have control over 
+     * @param {object} game - game object to have control over 
      */
-    constructor(target) {
-        this.target = target;
+    constructor(game) {
+        this.game = game;
         this.states = [];
         this.currentState = undefined;
         this.previousState = undefined;

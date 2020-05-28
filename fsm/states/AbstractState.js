@@ -2,11 +2,11 @@ export class AbstractState {
 
     /**
      * @param {string} name - name of the state controller
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(name, stateMachine) {
+    constructor(name, fsm) {
         this.name = name;
-        this.stateMachine = stateMachine;
+        this.fsm = fsm;
     }
 
     /**
@@ -23,6 +23,6 @@ export class AbstractState {
      * @param {string} stateName 
      */
     goToNextState(stateName) {
-        this.stateMachine.changeStateTo(stateName);
+        this.fsm.changeStateTo(stateName);
     }
 }

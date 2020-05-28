@@ -1,3 +1,8 @@
+import io from 'socket.io-client';
+
+import { ConnectionManager } from "./libs/ConnectionManager.js";
+import { ResourcesParser } from "./libs/ResourcesParser.js";
+import { ResizeManager } from "./libs/ResizeManager.js";
 import { Application } from "./libs/PixiCustomized.js";
 
 import { Game, Storage, Scene } from "./game";
@@ -9,8 +14,11 @@ game.setPixiApplication(new Application(gameConfig.application));
 game.setStorage(new Storage(gameConfig));
 game.setScene(new Scene());
 
-import { ResizeManager } from "./libs/ResizeManager.js";
-const resizeManager = new ResizeManager(game, gameConfig.application);
+game.addComponents([
+    { name: "connectionManager", component: new ConnectionManager(io) },
+    { name: "resourcesParser", component: new ResourcesParser(gameConfig) },
+    { name: "resizeManager", component: new ResizeManager(game, gameConfig.application) },
+]);
 
 import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig } from "./configs";
 import { BackgroundLayer, ControlLayer, GameLayer, UILayer } from "./game/layers";
@@ -35,10 +43,9 @@ fsm.registrStates([
 ]);
 
 game.init();
-resizeManager.resizeView();
 fsm.changeStateTo("PreloadState");
 
 if (gameConfig.isDebuggerMode) {
     window.Game = game;
-    window.StateMachine = fsm;
+    window.FSM = fsm;
 }

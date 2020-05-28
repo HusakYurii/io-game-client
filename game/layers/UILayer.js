@@ -17,7 +17,14 @@ export class UILayer extends AbstractLayer {
         this.inputs.nameInput.on("input", this.onPlayerInput);
 
         this.confirmBtn = this.getChildByName("button");
-        this.confirmBtn.once("pointerdown", this.unPlayerConfirm.bind(this, callback));
+        this.confirmBtn.once("pointerdown", (event) => {
+            this.disableInputs();
+    
+            callback({
+                name: this.inputs.nameInput.htmlInput.value,
+                roomId: ""
+            });
+        });
     }
 
     removeLoginPopup() {
@@ -37,16 +44,6 @@ export class UILayer extends AbstractLayer {
     disableInputs() {
         this.confirmBtn.interactive = false;
         this.inputs.nameInput.disabled = true;
-    }
-
-    unPlayerConfirm(callback, event) {
-        event.stopPropagation();
-        this.disableInputs();
-
-        callback({
-            name: this.inputs.nameInput.htmlInput.value,
-            roomId: ""
-        });
     }
 
     createConnectionLostPopup(callback) {
