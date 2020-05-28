@@ -20,7 +20,7 @@ export class ResizeManager {
 
     resizeView() {
         const { innerWidth, innerHeight } = window;
-        let { width, height } = this.configSize;
+        const { width, height } = this.configSize;
 
         let scl = 1;
         if (innerHeight > innerWidth) { //portrait
