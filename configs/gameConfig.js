@@ -7,7 +7,7 @@ export const gameConfig = {
         height: 600
     },
     ioUrl: 'http://192.168.168.101:9090',
-    assets: [
+    sprites: [
         { name: 'loginFormBackground', url: './assets/loginFormBackground.png' },
         { name: 'loginFormButton', url: './assets/loginFormButton.png' },
         { name: 'item', url: './assets/item.png' },
