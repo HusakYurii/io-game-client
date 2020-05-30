@@ -13,6 +13,7 @@ export class PreloadState extends AbstractState {
     onEnterState() {
         const onLoaded = callAfter(2, this.onAllLoaded, [], this);
 
+        this.fsm.game.init();
         this.fsm.game.loadGameAssets(onLoaded);
 
         const cnManager = this.fsm.game.getComponent("connectionManager");
@@ -24,6 +25,13 @@ export class PreloadState extends AbstractState {
     }
 
     onAllLoaded() {
+        /*
+         * Create this sprites here because when game is restarted
+         * it will go to LoginState. So we do not need to create beackgrounds once more
+         */
+        this.fsm.game.createGameBackground();
+        this.fsm.game.createGameWorld();
+
         this.goToNextState("LoginState");
     }
 
@@ -31,12 +39,6 @@ export class PreloadState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
-        /**
-         * Create this sprites here because when game is restarted
-         * it will go to LoginState. The reason is that we do not need preload anything
-         */
-        this.fsm.game.createGameBackground();
-        this.fsm.game.createGameWorld();
         callback();
     }
 }

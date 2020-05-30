@@ -14,12 +14,12 @@ export class LoginState extends AbstractState {
 
     onEnterState() {
         this.fsm.game.createLoginPopup(this.onPlayerInput.bind(this));
-                
-        this.fsm.game.getComponent("connectionManager")
-            .onDisconnected(this.onDisconnect);
 
-        this.fsm.game.getComponent("resizeManager")
-            .resizeView();
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.onDisconnected(this.onDisconnect);
+
+        const rsManager = this.fsm.game.getComponent("resizeManager");
+        rsManager.resizeView();
     }
 
     onDisconnect() {
@@ -30,12 +30,14 @@ export class LoginState extends AbstractState {
         const { playerId } = this.fsm.game.storage.getPlayerData();
         const payload = { id: playerId, ...inputs };
 
-        this.fsm.game.getComponent("connectionManager")
-            .loginPlayer(payload, this.onPlayerLoggedin);
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.loginPlayer(payload, this.onPlayerLoggedin);
     }
 
     onPlayerLoggedin(data) {
         this.fsm.game.storage.updatePlayerData(data);
+        this.fsm.game.removeLoginPopup();
+        
         this.goToNextState("ShowAdsState");
     }
 
@@ -43,10 +45,9 @@ export class LoginState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
-        this.fsm.game.getComponent("connectionManager")
-            .offDisconnected(this.onDisconnect);
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.offDisconnected(this.onDisconnect);
 
-        this.fsm.game.removeLoginPopup();
         callback();
     }
 }

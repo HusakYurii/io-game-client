@@ -13,8 +13,9 @@ export class GameOverState extends AbstractState {
 
     onEnterState() {
         this.fsm.game.createGameOverPopup(this.restartGame.bind(this));
-        this.fsm.game.getComponent("connectionManager")
-            .onDisconnected(this.onDisconnect);
+
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.onDisconnected(this.onDisconnect);
     }
 
     onDisconnect() {
@@ -23,24 +24,21 @@ export class GameOverState extends AbstractState {
 
     restartGame() {
         this.fsm.game.cleanUpGame();
-
-        const cnManager = this.fsm.game.getComponent("connectionManager");
-        cnManager.offDisconnected(this.onDisconnect);
-        cnManager.disconnect();
-        
-        // TODO it is better to just send an event and say taht we want to remove a player from 
-        // physics world and game room instead killing the connection
-
-        // or show an add while connecting to the game - it is beetter
-        //cnManager.connectPlayer(() => {
-            //this.goToNextState("LoginState");
-        //});
+        /**
+         * TODO  
+         * At this point I do not have any user's data because game storage was cleaned up.
+         * But a user is still in the game room and physics world on the server...
+         */ 
+        this.goToNextState("LoginState");
     }
 
     /**
      * @param {function} callback 
      */
     onExitState(callback) {
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.removeAllListeners();
+
         callback();
     }
 }

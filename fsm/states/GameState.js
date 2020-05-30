@@ -33,8 +33,8 @@ export class GameState extends AbstractState {
     sendData() {
         const payload = this.fsm.game.preparePayload();
 
-        this.fsm.game.getComponent("connectionManager")
-            .sendPlayerUpdates(payload);
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.sendPlayerUpdates(payload);
     }
 
     onUpdates(data) {
