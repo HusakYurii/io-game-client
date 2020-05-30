@@ -42,7 +42,6 @@ fsm.registrStates([
     new GameOverState(fsm)
 ]);
 
-game.init();
 fsm.changeStateTo("PreloadState");
 
 if (gameConfig.isDebuggerMode) {

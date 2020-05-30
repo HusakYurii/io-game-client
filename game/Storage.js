@@ -15,14 +15,10 @@ export class Storage {
          * Data related to player, it is being sent each tick
          * player will be set as game starts, so it can be availablein the model for every component
          */
-        this.player = null;
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-        this.playerPos = {
-            from: { x: 0, y: 0 },
-            to: { x: 0, y: 0 }
-        };
+      
         this.joysticDir = { x: 0, y: 0 };
         this.activate = false;
 
@@ -40,14 +36,10 @@ export class Storage {
         this.isGameStarted = false;
         this.isGameOver = false;
 
-        this.player = null;
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-        this.playerPos = {
-            from: { x: 0, y: 0 },
-            to: { x: 0, y: 0 }
-        };
+
         this.joysticDir = { x: 0, y: 0 };
         this.activate = false;
 

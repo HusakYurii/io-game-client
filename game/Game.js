@@ -129,11 +129,11 @@ export class Game {
     }
 
     preparePayload() {
-        const mousePos = this.storage.getJoysticrDir();
+        const joysticrDir = this.storage.getJoysticrDir();
         const playerData = this.storage.getPlayerData();
         const activate = this.storage.isPlayerActive();
 
-        return { ...playerData, ...mousePos, activate };
+        return { ...playerData, ...joysticrDir, activate };
     }
 
     startGameLoop() {
