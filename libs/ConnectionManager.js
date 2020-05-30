@@ -54,7 +54,18 @@ export class ConnectionManager {
     }
 
     disconnect() {
-        this.connection.close();
+        this.connection.disconnect();
+    }
+
+    on(eventName, callback) {
+        this.connection.on(eventName, callback);
+    }
+
+    off(eventName, callback) {
+        this.connection.off(eventName, callback);
+    }
+
+    removeAllListeners() {
         this.connection.removeAllListeners();
     }
 }
