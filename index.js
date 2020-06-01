@@ -1,23 +1,22 @@
-import io from 'socket.io-client';
+import ClientIO from 'socket.io-client';
 
 import { ConnectionManager } from "./libs/ConnectionManager.js";
 import { ResourcesParser } from "./libs/ResourcesParser.js";
 import { ResizeManager } from "./libs/ResizeManager.js";
-import { Application } from "./libs/PixiCustomized.js";
+import { Camera } from "./libs/Camera.js";
 
-import { Game, Storage, Scene } from "./game";
+import { Game } from "./game";
 import { gameConfig } from "./configs";
 
-const game = new Game();
+const game = new Game(gameConfig);
 
-game.setPixiApplication(new Application(gameConfig.application));
-game.setStorage(new Storage(gameConfig));
-game.setScene(new Scene());
+const { ioUrl, application, assets, cameraSettings } = gameConfig;
 
 game.addComponents([
-    { name: "connectionManager", component: new ConnectionManager(io) },
-    { name: "resourcesParser", component: new ResourcesParser(gameConfig) },
-    { name: "resizeManager", component: new ResizeManager(game, gameConfig.application) },
+    { name: "connectionManager", component: new ConnectionManager(ClientIO, ioUrl) },
+    { name: "resizeManager", component: new ResizeManager(game, application) },
+    { name: "resourcesParser", component: new ResourcesParser(assets) },
+    { name: "camera", component: new Camera(cameraSettings) },
 ]);
 
 import { controlLayerConfig, gameLayerConfig, uiLayerConfig, backgroundLayerConfig } from "./configs";
@@ -45,6 +44,6 @@ fsm.registrStates([
 fsm.changeStateTo("PreloadState");
 
 if (gameConfig.isDebuggerMode) {
-    window.Game = game;
+    window.GAME = game;
     window.FSM = fsm;
 }

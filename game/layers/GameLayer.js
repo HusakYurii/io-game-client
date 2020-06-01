@@ -21,8 +21,8 @@ export class GameLayer extends AbstractLayer {
         Object.values(this.items).forEach((item) => item.stopAnimation());
 
         this.players = Object.create(null);
-
         this.items = Object.create(null);
+
         this.gameWorld.removeChildren();
     }
 
@@ -34,9 +34,13 @@ export class GameLayer extends AbstractLayer {
         this.calculateBounds.cacheAsBitmap = true;
     }
 
-    updateLayer(dt, gameModel) {
-        const { playerId } = gameModel.getPlayerData();
-        const [serverUpdate] = gameModel.getServerUpdates();
+    /**
+     * @param {number} dt - delta time
+     * @param {Storage} storage 
+     */
+    updateLayer(dt, storage) {
+        const { playerId } = storage.getPlayerData();
+        const [serverUpdate] = storage.getServerUpdates();
 
         /**
          * In the case of if the ping was too long, we might not have the serverUpdate
@@ -58,12 +62,13 @@ export class GameLayer extends AbstractLayer {
             else this.createPlayer(playerData, playerId);
         });
 
-        /**
-         * TODO FIX it. it should be done by camera
-         * As camera moves layer, rest player to be at the center for camera effect
-         */
-        const player = this.players[playerId];
-        player && player.position.set(0, 0);
+        if(!storage.hasPlayer()) {
+            storage.setPlayer(this.players[playerId]);
+        }
+    }
+
+    getPlayer() {
+        return this.player;
     }
 
     createPlayer(data, selfId) {
@@ -92,6 +97,11 @@ export class GameLayer extends AbstractLayer {
         element.update();
     }
 
+    /**
+     * As this function is more generic, delete an item in both layers if it is in any of them
+     * @param {object} data 
+     * @param {string} group  - name of a group to delete an element from
+     */
     deleteElement(data, group) {
         const element = this[group][data.id];
         element.stopAnimation();
@@ -113,13 +123,5 @@ export class GameLayer extends AbstractLayer {
                 this.deleteElement({ id }, group);
             }
         }
-    }
-
-    /**
-     * @param {{x: number; y: number}} newPos - player next pos
-     */
-    move(newPos) {
-        this.gameWorld.position.set(newPos.x, newPos.y);
-        this.cameraBounds.position.set(newPos.x, newPos.y);
     }
 }

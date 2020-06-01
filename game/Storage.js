@@ -1,11 +1,10 @@
 const { GAME_CONSTANTS } = require("../../shared/Constants.js");
 
 export class Storage {
-    constructor(gameConfig) {
+    constructor() {
         /*
          * General data
          */
-        this.gameConfig = gameConfig;
         this.viewportSizes = {};
         this.isMobile = false;
         this.isGameStarted = false;
@@ -15,10 +14,11 @@ export class Storage {
          * Data related to player, it is being sent each tick
          * player will be set as game starts, so it can be availablein the model for every component
          */
+        this.player = null;
         this.playerId = "";
         this.roomId = "";
         this.name = "";
-      
+
         this.joysticDir = { x: 0, y: 0 };
         this.activate = false;
 
@@ -27,24 +27,6 @@ export class Storage {
          */
         this.gameStartTime = -1;
         this.gameRenderDelay = GAME_CONSTANTS.GAME_RENDER_DELAY;
-
-        this.serverUpdates = [];
-        this.serverStartTime = -1;
-    }
-
-    cleanUpData() {
-        this.isGameStarted = false;
-        this.isGameOver = false;
-
-        this.playerId = "";
-        this.roomId = "";
-        this.name = "";
-
-        this.joysticDir = { x: 0, y: 0 };
-        this.activate = false;
-
-        this.gameStartTime = -1;
-        this.gameRenderDelay = GAME_CONSTANTS.GAME_RENDER_DELAY;;
 
         this.serverUpdates = [];
         this.serverStartTime = -1;
@@ -117,12 +99,20 @@ export class Storage {
         return this.serverStartTime + (Date.now() - this.gameStartTime) - this.gameRenderDelay;
     }
 
-    getServerUrl() {
-        return this.gameConfig.ioUrl;
-    }
-
     getViewportSizes() {
         return this.viewportSizes;
+    }
+
+    hasPlayer() {
+        return Boolean(this.player);
+    }
+
+    setPlayer(player) {
+        this.player = player;
+    }
+
+    getPlayer() {
+        return this.player;
     }
 
     getPlayerData() {

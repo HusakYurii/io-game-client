@@ -1,38 +1,23 @@
+import { Application } from "../libs/PixiCustomized.js";
 import { TWEEN } from "../libs/Tween.js";
 
-export class Game {
-    constructor() {
+import { Storage } from "./Storage.js";
+import { Scene } from "./Scene.js";
 
-        this.app = null;
-        this.storage = null;
-        this.scene = null;
+export class Game {
+    constructor(config) {
+
+        this.app = new Application(config.application);
+        this.storage = new Storage();
+        this.scene = new Scene();
+
+        this.config = config;
 
         this.components = {};
 
         this.onClick = this.onClick.bind(this);
         this.onDoubleClick = this.onDoubleClick.bind(this);
         this.onGameLoop = () => { };
-    }
-
-    /**
-     * @param {PIXI.Application} app 
-     */
-    setPixiApplication(app) {
-        this.app = app
-    }
-
-    /**
-     * @param {Storage} storage 
-     */
-    setStorage(storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @param {Scene} scene 
-     */
-    setScene(scene) {
-        this.scene = scene;
     }
 
     addComponents(components) {
@@ -52,12 +37,24 @@ export class Game {
         document.body.appendChild(this.app.view);
     }
 
+    initCamera() {
+        const bgLayer = this.scene.getLayer("BackgroundLayer");
+        const gameLayer = this.scene.getLayer("GameLayer");
+
+        this.components.camera.setLayersToMove([
+            bgLayer.gameWorldBg,
+            gameLayer.gameWorld,
+            gameLayer.cameraBounds
+        ]);
+        this.components.camera.init();
+    }
+
     setViewLayers(layers) {
         this.scene.setLaters(layers);
     }
 
     loadGameAssets(callback) {
-        this.app.loader.add(this.storage.gameConfig.sprites);
+        this.app.loader.add(this.config.assets.sprites);
 
         this.app.loader.load((loader, resources) => {
             const parser = this.getComponent("resourcesParser");
@@ -69,6 +66,7 @@ export class Game {
 
     onResize(sizes) {
         this.app.renderer.resize(sizes.width, sizes.height);
+        this.components.camera.onResize(sizes);
         this.storage.updateViewportSizes(sizes);
         this.scene.resizeScene(sizes);
     }
@@ -77,12 +75,26 @@ export class Game {
         this.storage.isGameOver = true;
     }
 
-    cleanUpGame() {
+    /**
+     * In case if game was NOT disconnected reset storage softly,
+     * because socket is still connected
+     * @param {boolean} isDisconnected 
+     */
+    cleanUpGame(isDisconnected = false) {
         this.app.ticker.remove(this.gameLoop, this);
-        this.scene.cleanUpCamera();
+        this.components.camera.resetCamera();
         this.scene.cleanUpLayers();
-        this.storage.cleanUpData();
         TWEEN.removeAll();
+
+        /**
+         * FIXME  This is not the best solution!
+         */
+        let playerId = "";
+        if (!isDisconnected) {
+            playerId = this.storage.playerId;
+        }
+        this.storage = new Storage();
+        this.storage.updatePlayerData({ id: playerId });
     }
 
     createConnectionLostPopup(callback) {
@@ -143,8 +155,10 @@ export class Game {
     gameLoop(dt) {
         TWEEN.update(this.app.ticker.lastTime);
 
-        this.scene.updateCamera(dt, this.storage);
         this.scene.updateLayers(dt, this.storage);
+
+        this.components.camera.setTarget(this.storage.getPlayer());
+        this.components.camera.updateCamera(dt, this.storage);
 
         this.storage.removeUsedServerUpdates();
 

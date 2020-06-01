@@ -1,13 +1,14 @@
 const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
 
 export class ConnectionManager {
-    constructor(io) {
-        this.io = io;
+    constructor(ClientIO, ioUrl) {
+        this.ClientIO = ClientIO;
         this.connection = null;
+        this.ioUrl = ioUrl;
     }
 
-    init(url) {
-        this.connection = this.io(url);
+    init() {
+        this.connection = this.ClientIO(this.ioUrl);
     }
 
     connectPlayer(callback) {

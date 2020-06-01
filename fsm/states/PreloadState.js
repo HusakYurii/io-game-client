@@ -17,7 +17,7 @@ export class PreloadState extends AbstractState {
         this.fsm.game.loadGameAssets(onLoaded);
 
         const cnManager = this.fsm.game.getComponent("connectionManager");
-        cnManager.init(this.fsm.game.storage.getServerUrl());
+        cnManager.init();
         cnManager.connectPlayer((data) => {
             this.fsm.game.storage.updatePlayerData(data);
             onLoaded();
