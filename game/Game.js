@@ -1,120 +1,204 @@
 import { Application } from "../libs/PixiCustomized.js";
+import { TWEEN } from "../libs/Tween.js";
 
-export class Game extends Application {
+import { Storage } from "./Storage.js";
+import { Scene } from "./Scene.js";
 
-    /**
-     * @param {Controller} controller 
-     */
-    constructor(params, controller) {
-        super(params);
+export class Game {
+    constructor(config) {
 
-        this.controller = controller;
-        this._onConnectionLost = () => { };
+        this.app = new Application(config.application);
+        this.storage = new Storage();
+        this.scene = new Scene();
+
+        this.config = config;
+
+        this.components = {};
+
+        this.onClick = this.onClick.bind(this);
+        this.onDoubleClick = this.onDoubleClick.bind(this);
+        this.onGameLoop = () => { };
+    }
+
+    addComponents(components) {
+        components.forEach(({ name, component }) => {
+            this.components[name] = component;
+        });
+    }
+
+    getComponent(name) {
+        return this.components[name];
     }
 
     init() {
-        this.controller.initSocket(io);
-        this.controller.defineDevice();
-        this.stage.addChild(this.controller.view);
-        document.body.appendChild(this.view);
+        this.storage.isMobile = this.defineDevice();
+
+        this.app.stage.addChild(this.scene.view);
+        document.body.appendChild(this.app.view);
+    }
+
+    initCamera() {
+        const bgLayer = this.scene.getLayer("BackgroundLayer");
+        const gameLayer = this.scene.getLayer("GameLayer");
+
+        this.components.camera.setLayersToMove([
+            bgLayer.gameWorldBg,
+            gameLayer.gameWorld,
+            gameLayer.cameraBounds
+        ]);
+        this.components.camera.init();
     }
 
     setViewLayers(layers) {
-        this.controller.setViewLayers(layers);
+        this.scene.setLaters(layers);
     }
 
     loadGameAssets(callback) {
-        const { gameConfig } = this.controller.model;
+        this.app.loader.add(this.config.assets.sprites);
 
-        this.loader.add(gameConfig.assets);
-        this.loader.add(gameConfig.spritesheets);
-
-        this.loader.load(this.onAssetsLoaded.bind(this, callback));
+        this.app.loader.load((loader, resources) => {
+            const parser = this.getComponent("resourcesParser");
+            const parsedData = parser.parseResources(resources);
+            this.scene.setTextures(parsedData);
+            callback();
+        });
     }
 
-    onAssetsLoaded(callback, loader, resources) {
-        this.controller.setViewResources(resources);
-        callback();
+    onResize(sizes) {
+        this.app.renderer.resize(sizes.width, sizes.height);
+        this.components.camera.onResize(sizes);
+        this.storage.setViewportSizes(sizes);
+        this.scene.resizeScene(sizes);
     }
-
-    onResize(data) {
-        this.renderer.resize(data.width, data.height);
-        this.controller.onResize(data);
-    }
-
-    // ============== connection ===============
-    loginPlayer(data, callback) {
-        this.controller.loginPlayer(data, callback);
-    }
-
-    connectPlayer(callback) {
-        this.controller.connectPlayer(callback);
-    }
-
-    disconnectPlayer() {
-        this.controller.disconnectPlayer();
-    }
-
-    setUpdatesConnection(callback) {
-        this.controller.setUpdatesConnection(callback);
-    }
-
-    set onConnectionLost(callback) {
-        this._onConnectionLost = callback;
-    }
-
-    get onConnectionLost() {
-        return this._onConnectionLost;
-    }
-
-    // ============== connection ===============
 
     setGameOverStatus() {
-        this.controller.setGameOverStatus();
+        this.storage.isGameOver = true;
     }
 
-    cleanUpGame() {
-        this.ticker.remove(this.gameLoop, this);
-        this.controller.cleanUpGame();
+    /**
+     * In case if game was NOT disconnected reset storage softly,
+     * because socket is still connected
+     * @param {boolean} isDisconnected 
+     */
+    cleanUpGame(isDisconnected = false) {
+        this.app.ticker.remove(this.gameLoop, this);
+        this.components.camera.resetCamera();
+        this.scene.cleanUpLayers();
+        TWEEN.removeAll();
+
+        /**
+         * FIXME  This is not the best solution!
+         */
+        let playerId = "";
+        if (!isDisconnected) {
+            playerId = this.storage.playerId;
+        }
+        this.storage = new Storage();
+        this.storage.updatePlayerData({ id: playerId });
     }
 
     createConnectionLostPopup(callback) {
-        this.controller.createConnectionLostPopup(callback);
+        this.scene.createConnectionLostPopup(callback);
     }
 
     createGameOverPopup(callback) {
-        this.controller.createGameOverPopup(callback);
+        this.scene.createGameOverPopup(callback);
     }
 
     createLoginPopup(callback) {
-        this.controller.createLoginPopup(callback);
+        this.scene.createLoginPopup(callback);
     }
 
     removeLoginPopup() {
-        this.controller.removeLoginPopup();
+        this.scene.removeLoginPopup();
     }
 
     createGameBackground() {
-        this.controller.createGameBackground();
+        this.scene.createGameBackground();
     }
 
     createGameWorld() {
-        this.controller.createGameWorld();
+        this.scene.createGameWorld();
     }
 
     turnOnControls() {
-        this.controller.turnOnControls();
+        this.scene.turnOnControls(this.onClick, this.onDoubleClick);
     }
 
     turnOffControls() {
-        this.controller.turnOffControls();
+        this.scene.turnOffControls();
+    }
+
+    onClick({ x, y }) {
+        this.storage.setJoystickDir({
+            x: Math.round(x),
+            y: Math.round(y)
+        });
+    }
+
+    onDoubleClick() {
+        this.storage.activatePlayer();
+    }
+
+    preparePayload() {
+        const joysticrDir = this.storage.getJoysticrDir();
+        const playerData = this.storage.getPlayerData();
+        const activate = this.storage.isPlayerActived();
+
+        return { ...playerData, ...joysticrDir, activate };
     }
 
     startGameLoop() {
-        this.ticker.add(this.gameLoop, this);
+        this.app.ticker.add(this.gameLoop, this);
     }
 
     gameLoop(dt) {
-        this.controller.update(this.ticker, dt);
+        TWEEN.update(this.app.ticker.lastTime);
+
+        this.scene.updateLayers(dt, this.storage);
+
+        this.components.camera.setTarget(this.storage.getPlayer());
+        this.components.camera.updateCamera(dt, this.storage);
+
+        this.storage.removeUsedServerUpdates();
+
+        if (this.storage.isGameOver) {
+            return;
+        }
+
+        /**
+         * Call callback which is set by FSM to process game data
+         */
+        this.onGameLoop();
+
+        /* 
+         * After sending data, deactivate player gravity state
+         * to avoid sending it one more time
+         */
+        this.storage.deactivatePlayer();
+    }
+
+    defineDevice() {
+        const userAgent = Game.getUserAgent();
+        const regExpList = Game.getRegExpList();
+        return regExpList.some((regExp) => {
+            return regExp.test(userAgent);
+        });
     }
 }
+
+Game.getRegExpList = function () {
+    return [
+        new RegExp(/Android/i),
+        new RegExp(/webOS/i),
+        new RegExp(/iPhone/i),
+        new RegExp(/iPad/i),
+        new RegExp(/iPod/i),
+        new RegExp(/BlackBerry/i),
+        new RegExp(/Windows Phone/i)
+    ]
+};
+
+Game.getUserAgent = function () {
+    return navigator.userAgent || navigator.vendor || window.opera || "";
+};

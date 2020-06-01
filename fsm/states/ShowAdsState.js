@@ -3,10 +3,10 @@ import { AbstractState } from "./AbstractState.js";
 export class ShowAdsState extends AbstractState {
 
     /**
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(stateMachine) {
-        super("ShowAdsState", stateMachine);
+    constructor(fsm) {
+        super("ShowAdsState", fsm);
     }
 
     onEnterState() {

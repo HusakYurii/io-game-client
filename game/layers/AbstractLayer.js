@@ -19,7 +19,7 @@ export class AbstractLayer extends Container {
      * @abstract
      * @param {object} sizes 
      */
-    resize(sizes) { }
+    resizeLayer(sizes) { }
 
     /**
      * @abstract

@@ -25,14 +25,14 @@ export class ControlLayer extends AbstractLayer {
         this.pointerIds = [];
     }
 
-    resize(sizes) {
+    resizeLayer(sizes) {
         this.currViewportSizes = sizes;
         if (this.joystick && this.activateBtn) {
             this.updateControlsPos();
         }
     }
 
-    setControls(onDirChanged, onAtivated) {
+    turnOnControls(onDirChanged, onAtivated) {
         this.joystick = this.addChild(...Builder.fromConfig(this.config.joystick));
         this.joystick.interactive = true;
 
@@ -52,7 +52,7 @@ export class ControlLayer extends AbstractLayer {
         this.activateBtn.on("pointerdown", this.onButtonClick, this);
     }
 
-    removeControls() {
+    turnOffControls() {
         this.joystick.removeAllListeners();
         this.joystick = null;
 

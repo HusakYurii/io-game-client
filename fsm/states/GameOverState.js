@@ -3,29 +3,42 @@ import { AbstractState } from "./AbstractState.js";
 export class GameOverState extends AbstractState {
 
     /**
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(stateMachine) {
-        super("GameOverState", stateMachine);
+    constructor(fsm) {
+        super("GameOverState", fsm);
+
+        this.onDisconnect = this.onDisconnect.bind(this);
     }
 
     onEnterState() {
-        this.stateMachine.target.createGameOverPopup(this.restartGame.bind(this));
+        this.fsm.game.createGameOverPopup(this.restartGame.bind(this));
+
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.onDisconnected(this.onDisconnect);
+    }
+
+    onDisconnect() {
+        console.log("Disconnect in GameOverState");
     }
 
     restartGame() {
-        this.stateMachine.target.disconnectPlayer();
-        this.stateMachine.target.cleanUpGame();
-
-        this.stateMachine.target.connectPlayer(() => {
-            this.goToNextState("LoginState");
-        });
+        this.fsm.game.cleanUpGame();
+        /**
+         * TODO  
+         * At this point I do not have any user's data because game storage was cleaned up.
+         * But a user is still in the game room and physics world on the server...
+         */ 
+        this.goToNextState("LoginState");
     }
 
     /**
      * @param {function} callback 
      */
     onExitState(callback) {
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.removeAllListeners();
+
         callback();
     }
 }

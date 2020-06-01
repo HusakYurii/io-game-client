@@ -3,23 +3,41 @@ import { AbstractState } from "./AbstractState.js";
 export class LoginState extends AbstractState {
 
     /**
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(stateMachine) {
-        super("LoginState", stateMachine);
+    constructor(fsm) {
+        super("LoginState", fsm);
+
+        this.onDisconnect = this.onDisconnect.bind(this);
+        this.onPlayerLoggedin = this.onPlayerLoggedin.bind(this);
     }
 
     onEnterState() {
-        this.stateMachine.target.createLoginPopup(this.onPlayerInput.bind(this));
+        this.fsm.game.createLoginPopup(this.onPlayerInput.bind(this));
+
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.onDisconnected(this.onDisconnect);
+
+        const rsManager = this.fsm.game.getComponent("resizeManager");
+        rsManager.resizeView();
+    }
+
+    onDisconnect() {
+        console.log("Disconnect in LoginState");
+    }
+
+    onPlayerInput(inputs) {
+        const { playerId } = this.fsm.game.storage.getPlayerData();
+        const payload = { id: playerId, ...inputs };
+
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.loginPlayer(payload, this.onPlayerLoggedin);
+    }
+
+    onPlayerLoggedin(data) {
+        this.fsm.game.storage.updatePlayerData(data);
+        this.fsm.game.removeLoginPopup();
         
-        window.dispatchEvent(new Event("resize")); // FIXME
-    }
-
-    onPlayerInput(data) {
-        this.stateMachine.target.loginPlayer(data, this.onPlayerLoggedin.bind(this));
-    }
-
-    onPlayerLoggedin() {
         this.goToNextState("ShowAdsState");
     }
 
@@ -27,7 +45,9 @@ export class LoginState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
-        this.stateMachine.target.removeLoginPopup();
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.offDisconnected(this.onDisconnect);
+
         callback();
     }
 }

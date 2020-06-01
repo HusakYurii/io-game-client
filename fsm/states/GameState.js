@@ -3,23 +3,53 @@ import { AbstractState } from "./AbstractState.js";
 export class GameState extends AbstractState {
 
     /**
-     * @param {StateMachine} stateMachine 
+     * @param {StateMachine} fsm 
      */
-    constructor(stateMachine) {
-        super("GameState", stateMachine);
+    constructor(fsm) {
+        super("GameState", fsm);
 
+        this.onDisconnect = this.onDisconnect.bind(this);
         this.onGameOver = this.onGameOver.bind(this);
+        this.onUpdates = this.onUpdates.bind(this);
+        this.sendData = this.sendData.bind(this);
     }
 
     onEnterState() {
-        this.stateMachine.target.setUpdatesConnection(this.onGameOver);
-        this.stateMachine.target.turnOnControls();
-        this.stateMachine.target.startGameLoop();
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.onServerUpdates(this.onUpdates);
+        cnManager.onDisconnected(this.onDisconnect);
+        cnManager.onGameOver(this.onGameOver);
+        
+        
+        this.fsm.game.storage.setGameStartTime();
+        this.fsm.game.onGameLoop = this.sendData;
+        this.fsm.game.turnOnControls();
+        this.fsm.game.startGameLoop();
+        this.fsm.game.initCamera();
+    }
+
+    /*
+     * All Player's last actions are being sent once at the tick
+     * It also helps to avoid data overloading
+     */
+    sendData() {
+        const payload = this.fsm.game.preparePayload();
+
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.sendPlayerUpdates(payload);
+    }
+
+    onUpdates(data) {
+        this.fsm.game.storage.setServerUpdates(data);
+    }
+
+    onDisconnect() {
+        console.log("Disconnect in GameState");
     }
 
     onGameOver() {
-        this.stateMachine.target.turnOffControls();
-        this.stateMachine.target.setGameOverStatus();
+        this.fsm.game.turnOffControls();
+        this.fsm.game.setGameOverStatus();
         this.goToNextState("GameOverState");
     }
 
@@ -27,6 +57,9 @@ export class GameState extends AbstractState {
      * @param {function} callback 
      */
     onExitState(callback) {
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        cnManager.offDisconnected(this.onDisconnect);
+        cnManager.offGameOver(this.onGameOver);
         callback();
     }
 }
