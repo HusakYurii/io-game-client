@@ -54,6 +54,13 @@ export class ConnectionManager {
         this.connection.emit(CONNECTION_CONSTANTS.PLAYER_UPDATES, JSON.stringify(data));
     }
 
+    restartGame(data, callback) {
+        this.connection.emit(CONNECTION_CONSTANTS.RESTART_GAME, JSON.stringify(data));
+        this.connection.on(CONNECTION_CONSTANTS.GAME_RESTARTED, (payload) => {
+            callback(JSON.parse(payload));
+        });
+    }
+
     disconnect() {
         this.connection.disconnect();
     }

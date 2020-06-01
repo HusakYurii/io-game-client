@@ -23,13 +23,14 @@ export class GameOverState extends AbstractState {
     }
 
     restartGame() {
-        this.fsm.game.cleanUpGame();
-        /**
-         * TODO  
-         * At this point I do not have any user's data because game storage was cleaned up.
-         * But a user is still in the game room and physics world on the server...
-         */ 
-        this.goToNextState("LoginState");
+        const cnManager = this.fsm.game.getComponent("connectionManager");
+        const { playerId } = this.fsm.game.storage.getPlayerData();
+
+        cnManager.restartGame({ id: playerId }, (data) => {
+            this.fsm.game.cleanUpGame();
+            this.fsm.game.storage.updatePlayerData(data);
+            this.goToNextState("LoginState");
+        });
     }
 
     /**

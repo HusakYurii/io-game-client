@@ -75,26 +75,13 @@ export class Game {
         this.storage.isGameOver = true;
     }
 
-    /**
-     * In case if game was NOT disconnected reset storage softly,
-     * because socket is still connected
-     * @param {boolean} isDisconnected 
-     */
-    cleanUpGame(isDisconnected = false) {
+    cleanUpGame() {
         this.app.ticker.remove(this.gameLoop, this);
         this.components.camera.resetCamera();
         this.scene.cleanUpLayers();
         TWEEN.removeAll();
-
-        /**
-         * FIXME  This is not the best solution!
-         */
-        let playerId = "";
-        if (!isDisconnected) {
-            playerId = this.storage.playerId;
-        }
+        
         this.storage = new Storage();
-        this.storage.updatePlayerData({ id: playerId });
     }
 
     createConnectionLostPopup(callback) {
