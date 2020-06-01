@@ -21,7 +21,7 @@ export class GameState extends AbstractState {
         cnManager.onGameOver(this.onGameOver);
         
         
-        this.fsm.game.storage.updateGameStartTime();
+        this.fsm.game.storage.setGameStartTime();
         this.fsm.game.onGameLoop = this.sendData;
         this.fsm.game.turnOnControls();
         this.fsm.game.startGameLoop();

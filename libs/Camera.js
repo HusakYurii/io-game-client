@@ -100,6 +100,8 @@ export class Camera {
 
     zoomLayers(scl = 1) {
         this.layersToMve.forEach((layer) => {
+            // FIXME It is not a good idea to use parent - think about changing hierachy  of 
+            // these layers
             layer.parent.scale.set(scl, scl);
         });
     }

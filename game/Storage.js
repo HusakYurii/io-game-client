@@ -20,7 +20,7 @@ export class Storage {
         this.name = "";
 
         this.joysticDir = { x: 0, y: 0 };
-        this.activate = false;
+        this.isPLayerActivated = false;
 
         /*
          * Data related to server/render updates
@@ -32,22 +32,61 @@ export class Storage {
         this.serverStartTime = -1;
     }
 
-    updateViewportSizes(data) {
+    /**
+     * Current sizes provided by Resize Manager
+     * @param {{width: number;, height: number; scl: number;}} data 
+     */
+    setViewportSizes(data) {
         this.viewportSizes = data;
     }
 
-    updateGameStartTime() {
+    /**
+     * @returns {{width: number;, height: number; scl: number;}}
+     */
+    getViewportSizes() {
+        return this.viewportSizes;
+    }
+
+    /**
+     * To set time when GameState was started
+     */
+    setGameStartTime() {
         this.gameStartTime = Date.now();
     }
 
+    /**
+     * 
+     * @param {{playerId: string; roomId: string; name: string;}} param0 
+     */
     updatePlayerData({ id, roomId, name } = {}) {
         this.playerId = id;
         this.roomId = roomId;
         this.name = name;
     }
 
+    /**
+     * @returns {{playerId: string; roomId: string; name: string;}}
+     */
+    getPlayerData() {
+        return {
+            playerId: this.playerId,
+            roomId: this.roomId,
+            name: this.name
+        }
+    }
+
+    /**
+     * @param {{x: number; y: number;}} data
+     */
     setJoystickDir(data) {
         this.joysticDir = { x: data.x, y: data.y };
+    }
+
+    /**
+     * @returns {{x: number; y: number;}}
+     */
+    getJoysticrDir() {
+        return this.joysticDir;
     }
 
     setServerUpdates(data) {
@@ -70,6 +109,9 @@ export class Storage {
         }
     }
 
+    /**
+     * @returns {any[]}
+     */
     getServerUpdates() {
         return this.serverUpdates;
     }
@@ -79,15 +121,18 @@ export class Storage {
     }
 
     activatePlayer() {
-        this.activate = true;
+        this.isPLayerActivated = true;
     }
 
     deactivatePlayer() {
-        this.activate = false;
+        this.isPLayerActivated = false;
     }
 
-    isPlayerActive() {
-        return this.activate;
+    /**
+     * @returns {boolean}
+     */
+    isPlayerActived() {
+        return this.isPLayerActivated;
     }
 
     /**
@@ -99,31 +144,24 @@ export class Storage {
         return this.serverStartTime + (Date.now() - this.gameStartTime) - this.gameRenderDelay;
     }
 
-    getViewportSizes() {
-        return this.viewportSizes;
-    }
-
+    /**
+     * @returns {boolean}
+     */
     hasPlayer() {
         return Boolean(this.player);
     }
 
+    /**
+     * @param {PIXI.DisplayObject} player 
+     */
     setPlayer(player) {
         this.player = player;
     }
 
+    /**
+     * @returns {PIXI.DisplayObject} 
+     */
     getPlayer() {
         return this.player;
-    }
-
-    getPlayerData() {
-        return {
-            playerId: this.playerId,
-            roomId: this.roomId,
-            name: this.name
-        }
-    }
-
-    getJoysticrDir() {
-        return this.joysticDir;
     }
 }

@@ -67,7 +67,7 @@ export class Game {
     onResize(sizes) {
         this.app.renderer.resize(sizes.width, sizes.height);
         this.components.camera.onResize(sizes);
-        this.storage.updateViewportSizes(sizes);
+        this.storage.setViewportSizes(sizes);
         this.scene.resizeScene(sizes);
     }
 
@@ -143,7 +143,7 @@ export class Game {
     preparePayload() {
         const joysticrDir = this.storage.getJoysticrDir();
         const playerData = this.storage.getPlayerData();
-        const activate = this.storage.isPlayerActive();
+        const activate = this.storage.isPlayerActived();
 
         return { ...playerData, ...joysticrDir, activate };
     }
