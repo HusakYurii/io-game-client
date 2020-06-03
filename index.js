@@ -29,7 +29,7 @@ game.setViewLayers([
     new UILayer(uiLayerConfig)
 ]);
 
-import { StateMachine, GamePausedState, GameOverState, PreloadState, LoginState, GameState, ShowAdsState } from "./fsm";
+import { StateMachine, GamePausedState, GameOverState, PreloadState, LoginState, GameState, ShowAdsState, DisconnectState } from "./fsm";
 
 const fsm = new StateMachine(game);
 fsm.registrStates([
@@ -38,7 +38,8 @@ fsm.registrStates([
     new ShowAdsState(fsm),
     new GameState(fsm),
     new GamePausedState(fsm),
-    new GameOverState(fsm)
+    new GameOverState(fsm),
+    new DisconnectState(fsm)
 ]);
 
 fsm.changeStateTo("PreloadState");
