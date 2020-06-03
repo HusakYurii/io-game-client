@@ -19,8 +19,7 @@ export class GameState extends AbstractState {
         cnManager.onServerUpdates(this.onUpdates);
         cnManager.onDisconnected(this.onDisconnect);
         cnManager.onGameOver(this.onGameOver);
-        
-        
+
         this.fsm.game.storage.setGameStartTime();
         this.fsm.game.onGameLoop = this.sendData;
         this.fsm.game.turnOnControls();
@@ -43,13 +42,18 @@ export class GameState extends AbstractState {
         this.fsm.game.storage.setServerUpdates(data);
     }
 
+    stopGame() {
+        this.fsm.game.turnOffControls();
+        this.fsm.game.setGameOverStatus();
+    }
+
     onDisconnect() {
-        console.log("Disconnect in GameState");
+        this.stopGame();
+        this.goToNextState("DisconnectState");
     }
 
     onGameOver() {
-        this.fsm.game.turnOffControls();
-        this.fsm.game.setGameOverStatus();
+        this.stopGame();
         this.goToNextState("GameOverState");
     }
 
@@ -60,6 +64,7 @@ export class GameState extends AbstractState {
         const cnManager = this.fsm.game.getComponent("connectionManager");
         cnManager.offDisconnected(this.onDisconnect);
         cnManager.offGameOver(this.onGameOver);
+
         callback();
     }
 }

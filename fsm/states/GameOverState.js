@@ -19,7 +19,7 @@ export class GameOverState extends AbstractState {
     }
 
     onDisconnect() {
-        console.log("Disconnect in GameOverState");
+        this.goToNextState("DisconnectState");
     }
 
     restartGame() {
@@ -29,6 +29,7 @@ export class GameOverState extends AbstractState {
         cnManager.restartGame({ id: playerId }, (data) => {
             this.fsm.game.cleanUpGame();
             this.fsm.game.storage.updatePlayerData(data);
+            
             this.goToNextState("LoginState");
         });
     }

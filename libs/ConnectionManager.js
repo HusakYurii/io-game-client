@@ -3,66 +3,71 @@ const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
 export class ConnectionManager {
     constructor(ClientIO, ioUrl) {
         this.ClientIO = ClientIO;
-        this.connection = null;
         this.ioUrl = ioUrl;
-    }
 
-    init() {
-        this.connection = this.ClientIO(this.ioUrl);
+        this.connection = null;
     }
 
     connectPlayer(callback) {
-        if (!this.connection.connected) {
-            this.connection.connect();
-        }
-        this.connection.emit(CONNECTION_CONSTANTS.CONNECT_PLAYER);
-        this.connection.on(CONNECTION_CONSTANTS.PLAYER_CONNECTED, (payload) => {
+        this.connection = this.ClientIO(this.ioUrl);
+        this.once(CONNECTION_CONSTANTS.PLAYER_CONNECTED, (payload) => {
             callback(JSON.parse(payload));
         });
     }
 
     loginPlayer(data, callback) {
-        this.connection.emit(CONNECTION_CONSTANTS.LOGIN_PLAYER, JSON.stringify(data));
-        this.connection.on(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, (payload) => {
+        this.emit(CONNECTION_CONSTANTS.LOGIN_PLAYER, data);
+        this.once(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, (payload) => {
             callback(JSON.parse(payload));
         });
     }
 
     onServerUpdates(callback) {
-        this.connection.on(CONNECTION_CONSTANTS.SERVER_UPDATES, (payload) => {
+        this.on(CONNECTION_CONSTANTS.SERVER_UPDATES, (payload) => {
             callback(JSON.parse(payload));
         });
-    }
-
-    onGameOver(callback) {
-        this.connection.on(CONNECTION_CONSTANTS.GAME_OVER, callback);
-    }
-
-    offGameOver(callback) {
-        this.connection.off(CONNECTION_CONSTANTS.GAME_OVER, callback);
-    }
-
-    onDisconnected(callback) {
-        this.connection.on(CONNECTION_CONSTANTS.DISCONNECT, callback);
-    }
-
-    offDisconnected(callback) {
-        this.connection.off(CONNECTION_CONSTANTS.DISCONNECT, callback);
     }
 
     sendPlayerUpdates(data) {
-        this.connection.emit(CONNECTION_CONSTANTS.PLAYER_UPDATES, JSON.stringify(data));
+        this.emit(CONNECTION_CONSTANTS.PLAYER_UPDATES, data);
     }
 
     restartGame(data, callback) {
-        this.connection.emit(CONNECTION_CONSTANTS.RESTART_GAME, JSON.stringify(data));
-        this.connection.on(CONNECTION_CONSTANTS.GAME_RESTARTED, (payload) => {
+        this.emit(CONNECTION_CONSTANTS.RESTART_GAME, data);
+        this.once(CONNECTION_CONSTANTS.GAME_RESTARTED, (payload) => {
             callback(JSON.parse(payload));
         });
+    }
+
+    /**
+     * Functions below are used as helpers for different scenarios
+     */
+    onGameOver(callback) {
+        this.once(CONNECTION_CONSTANTS.GAME_OVER, callback);
+    }
+
+    offGameOver(callback) {
+        this.off(CONNECTION_CONSTANTS.GAME_OVER, callback);
+    }
+
+    onDisconnected(callback) {
+        this.once(CONNECTION_CONSTANTS.DISCONNECT, callback);
+    }
+
+    offDisconnected(callback) {
+        this.off(CONNECTION_CONSTANTS.DISCONNECT, callback);
     }
 
     disconnect() {
         this.connection.disconnect();
+    }
+
+    emit(eventName, data = {}) {
+        this.connection.emit(eventName, JSON.stringify(data));
+    }
+
+    once(eventName, callback) {
+        this.connection.once(eventName, callback);
     }
 
     on(eventName, callback) {

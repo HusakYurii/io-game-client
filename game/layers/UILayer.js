@@ -19,7 +19,7 @@ export class UILayer extends AbstractLayer {
         this.confirmBtn = this.getChildByName("button");
         this.confirmBtn.once("pointerdown", (event) => {
             this.disableInputs();
-    
+
             callback({
                 name: this.inputs.nameInput.htmlInput.value,
                 roomId: ""
@@ -50,7 +50,10 @@ export class UILayer extends AbstractLayer {
         const popup = this.addChild(...Builder.fromConfig(this.config.connectionLostPopupTree));
         const reconnectButton = popup.getChildByName("reconnectButton");
         reconnectButton.interactive = true;
-        reconnectButton.once("pointerdown", callback);
+        reconnectButton.once("pointerdown", () => {
+            reconnectButton.alpha = 0.7;
+            callback();
+        });
     }
 
     createGameOverPopup(callback) {
