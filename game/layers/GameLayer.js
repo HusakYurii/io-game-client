@@ -3,7 +3,7 @@ import { Builder } from "../../libs/Builder.js";
 import { Item } from "../entities/Item.js";
 import { Player } from "../entities/Player.js";
 
-const { GAME_CONSTANTS } = require("../../../shared/Constants.js");
+import { GAME_CONSTANTS } from "../../libs/Shared.js";
 const { WORLD_WIDTH, WORLD_HEIGTH } = GAME_CONSTANTS;
 
 export class GameLayer extends AbstractLayer {

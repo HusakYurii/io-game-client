@@ -1,6 +1,6 @@
 import { Builder } from "../../libs/Builder.js";
 import { TWEEN } from "../../libs/Tween.js";
-const { randomInt, randomFloat } = require("../../../shared/Tools.js");
+import { randomInt, randomFloat } from "../../libs/Shared.js";
 
 export class Item extends Builder.Container {
     constructor(data) {

@@ -1,13 +1,13 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
 
-const { GAME_CONSTANTS } = require("../../../shared/Constants.js");
+import { GAME_CONSTANTS } from "../../libs/Shared.js";
 const { WORLD_WIDTH, WORLD_HEIGTH } = GAME_CONSTANTS;
 
 export class BackgroundLayer extends AbstractLayer {
     constructor(config) {
         super(config);
-        
+
         this.gameWorldBg = null;
     }
 

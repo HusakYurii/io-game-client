@@ -1,4 +1,4 @@
-const { GAME_CONSTANTS } = require("../../shared/Constants.js");
+import { GAME_CONSTANTS } from "../libs/Shared.js"
 
 export class Storage {
     constructor() {

@@ -1,4 +1,4 @@
-const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
+import { CONNECTION_CONSTANTS } from "./Shared.js";
 
 export class ConnectionManager {
     constructor(ClientIO, ioUrl) {

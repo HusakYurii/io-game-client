@@ -1,7 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
-
-const Vector2D = require("../../../physics/Vector2D.js");
+import { Vector2D } from "../../libs/Shared.js";
 
 export class ControlLayer extends AbstractLayer {
     constructor(config) {

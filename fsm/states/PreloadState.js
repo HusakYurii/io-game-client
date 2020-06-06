@@ -1,5 +1,5 @@
 import { AbstractState } from "./AbstractState.js";
-import { callAfter } from "../../../shared/Tools.js";
+import { callAfter } from "../../libs/Shared.js";
 
 export class PreloadState extends AbstractState {
 

@@ -1,6 +1,6 @@
 import { Item } from "./Item";
 import { Builder } from "../../libs/Builder.js";
-const { randomColor } = require("../../../shared/Tools.js");
+import {randomColor } from "../../libs/Shared.js";
 
 export class Player extends Item {
     constructor(data) {
