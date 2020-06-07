@@ -1,6 +1,6 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
-import { Item } from "../entities/Item.js";
+import { Star } from "../entities/Star.js";
 import { Player } from "../entities/Player.js";
 
 import { GAME_CONSTANTS } from "../../libs/Shared.js";
@@ -72,8 +72,7 @@ export class GameLayer extends AbstractLayer {
     }
 
     createPlayer(data, selfId) {
-        data.pictureName = "item"; // FIXME it is not a good idea
-        const player = Player.create(data, selfId);
+        const player = Player.create(this.config.player, data);
         this.players[data.id] = player;
 
         /*
@@ -84,8 +83,7 @@ export class GameLayer extends AbstractLayer {
     }
 
     createElement(data, group) {
-        data.pictureName = "star"; // FIXME it is not a good idea
-        const element = Item.create(data);
+        const element = Star.create(this.config.item, data);
         element.startAnimation();
         this[group][data.id] = element;
         this.gameWorld.addChild(element);
