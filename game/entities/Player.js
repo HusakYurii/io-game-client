@@ -1,10 +1,9 @@
-import { Item } from "./Item";
+import { AbstractEntity } from "./AbstractEntity.js";
 import { Builder } from "../../libs/Builder.js";
-import {randomColor } from "../../libs/Shared.js";
 
-export class Player extends Item {
-    constructor(data) {
-        super(data);
+export class Player extends AbstractEntity {
+    constructor() {
+        super();
 
         this.isActivated = false;
         this.isCooledDown = true;
@@ -13,24 +12,6 @@ export class Player extends Item {
         this.coolDownTimer = 0;
         this.coolDownTime = 0;
         this.gravityR = 0;
-
-        this.gravityRing = this.addChild(
-            Builder.createSprite({
-                pictureName: "item",
-                name: "ring",
-                modifiers: { alpha: 0.2, anchor: { x: 0.5, y: 0.5 }, scale: { x: 1, y: 1 } }
-            })
-        );
-        this.coolDownBar = this.addChild(
-            Builder.createSprite({
-                pictureName: "loginFormBackground",
-                name: "coolDownTimer",
-                modifiers: { width: 0, height: 20 }
-            })
-        );
-        this.coolDownBar.tint = "0xFF0000";
-        this.coolDownBar.visible = false;
-        this.gravityRing.visible = false;
     }
 
     /**
@@ -42,9 +23,10 @@ export class Player extends Item {
     }
 
     updateGravityAimation() {
-        this.gravityRing.visible = this.isActivated;
-        this.gravityRing.width = this.gravityR * 2;
-        this.gravityRing.height = this.gravityR * 2;
+        const gravityRing = this.getChildByName("gravityRing");
+        gravityRing.visible = this.isActivated;
+        gravityRing.width = this.gravityR * 2;
+        gravityRing.height = this.gravityR * 2;
     }
 
     updateCoolDownAnimation() {
@@ -56,11 +38,14 @@ export class Player extends Item {
          * and then reverse it
          * 1 - ((coolDownTimer * 1) / coolDownTime)
          */
-        this.coolDownBar.visible = !this.isCooledDown;
-        this.coolDownBar.width = 150 - ((this.coolDownTimer / this.coolDownTime) * 150);
+        const coolDownBar = this.getChildByName("coolDownBar");
+        const player = this.getChildByName("player");
 
-        const { width, height } = this.view;
-        this.coolDownBar.position.set(-150 / 2, -(height + 50) / 2);
+        coolDownBar.visible = !this.isCooledDown;
+        coolDownBar.width = 150 - ((this.coolDownTimer / this.coolDownTime) * 150);
+
+        const { width, height } = player;
+        coolDownBar.position.set(-150 / 2, -(height + 50) / 2);
     }
 
     /**
@@ -68,7 +53,11 @@ export class Player extends Item {
      * @param {{[key: string]: any}} data 
      */
     updateData(data) {
-        super.updateData(data);
+        const player = this.getChildByName("player");
+        player.width = data.r * 2;
+        player.height = data.r * 2;
+
+        this.position.set(data.x, data.y);
 
         this.isActivated = data.isActivated;
         this.isCooledDown = data.isCooledDown;
@@ -81,12 +70,29 @@ export class Player extends Item {
 
     /**
      * @extends
-     * @param {{[key: string]: any}} data
-     * @param {string} selfId 
+     * @param {object[]} config
+     * @param {{[key: string]: any}} config
      */
-    static create(data, selfId) {
-        const player = new Player(data);
-        player.view.tint = data.id === selfId ? "0xFFFF00" : randomColor("0x");
+    static create(config, data) {
+        const el = config.find(({ name }) => name === "player");
+        el.pictureName = Player.getRandomPicName();
+
+        const player = new Player();
+        player.addChild(...Builder.fromConfig(config));
+
+        player.getChildByName("coolDownBar").tint = "0xFF0000";
+        player.getChildByName("coolDownBar").visible = false;
+        player.getChildByName("gravityRing").visible = false;
+        player.updateData(data);
         return player;
     }
+
+    static getRandomPicName() {
+        const indx = Math.floor(Math.random() * Player.planetsMap.length);
+        return Player.planetsMap[indx];
+    }
 }
+
+Player.planetsMap = [
+    "1", "2", "3", "5", "8", "9", "10", "11", "12", "13", "15", "16", "19", "21", "29", "30",
+];

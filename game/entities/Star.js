@@ -1,26 +1,17 @@
+import { AbstractEntity } from "./AbstractEntity.js";
 import { Builder } from "../../libs/Builder.js";
 import { TWEEN } from "../../libs/Tween.js";
 import { randomInt, randomFloat } from "../../libs/Shared.js";
 
-export class Item extends Builder.Container {
-    constructor(data) {
+export class Star extends AbstractEntity {
+    constructor() {
         super();
 
-        this.view = this.addChild(Builder.createSprite({
-            pictureName: data.pictureName,
-            name: data.id,
-            modifiers: {
-                anchor: { x: 0.5, y: 0.5 }
-            }
-        }));
-        this.view.tint = Item.getRandomTint();
-
         this.tween = null;
-        this.updateData(data);
     }
 
     startAnimation() {
-        this.tween = new TWEEN.Tween(this.view)
+        this.tween = new TWEEN.Tween(this)
             .to({ alpha: randomFloat(0.2, 0.6) }, randomInt(1000, 2000))
             .repeat(Infinity)
             .yoyo(true)
@@ -34,35 +25,35 @@ export class Item extends Builder.Container {
     }
 
     /**
-     * @param {number} dt - delta time
-     */
-    update(dt) { }
-
-    /**
      * @param {{[key: string]: any}} data 
      */
     updateData(data) {
-        this.view.width = data.r * 2;
-        this.view.height = data.r * 2;
+        this.width = data.r * 2;
+        this.height = data.r * 2;
         this.position.set(data.x, data.y);
     }
 
     /**
      * @static
+     * @param {object[]} config 
      * @param {{[key: string]: any}} data 
-     * @returns {Item}
+     * @returns {Star}
      */
-    static create(data) {
-        return new Item(data);
+    static create(config, data) {
+        const star = new Star();
+        star.addChild(...Builder.fromConfig(config));
+        star.getChildByName("star").tint = Star.getRandomTint();
+        star.updateData(data);
+        return star;
     }
 
     static getRandomTint() {
-        const indx = Math.floor(Math.random() * Item.tintsMap.length)
-        return Item.tintsMap[indx];
+        const indx = Math.floor(Math.random() * Star.tintsMap.length);
+        return Star.tintsMap[indx];
     }
 }
 
-Item.tintsMap = [
+Star.tintsMap = [
     "0x03cefc",
     "0xfc5203",
     "0xfcf403",
