@@ -54,7 +54,10 @@ export class Game {
     }
 
     loadGameAssets(callback) {
-        this.app.loader.add(this.config.assets.sprites);
+        const { sprites = [], spritesheets = [] } = this.config.assets;
+
+        this.app.loader.add(sprites);
+        this.app.loader.add(spritesheets);
 
         this.app.loader.load((loader, resources) => {
             const parser = this.getComponent("resourcesParser");
@@ -80,7 +83,7 @@ export class Game {
         this.components.camera.resetCamera();
         this.scene.cleanUpLayers();
         TWEEN.removeAll();
-        
+
         this.storage = new Storage();
     }
 
