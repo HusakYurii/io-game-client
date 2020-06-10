@@ -10,10 +10,11 @@ import { gameConfig } from "./configs";
 
 const game = new Game(gameConfig);
 
-const { ioUrl, application, assets, cameraSettings } = gameConfig;
+const { prodUrl, devUrl, application, assets, cameraSettings } = gameConfig;
+const currUrl = gameConfig.isDevMode ? devUrl : prodUrl;
 
 game.addComponents([
-    { name: "connectionManager", component: new ConnectionManager(ClientIO, ioUrl) },
+    { name: "connectionManager", component: new ConnectionManager(ClientIO, currUrl) },
     { name: "resizeManager", component: new ResizeManager(game, application) },
     { name: "resourcesParser", component: new ResourcesParser(assets) },
     { name: "camera", component: new Camera(cameraSettings) },
@@ -44,7 +45,7 @@ fsm.registrStates([
 
 fsm.changeStateTo("PreloadState");
 
-if (gameConfig.isDebuggerMode) {
+if (gameConfig.isDevMode) {
     window.GAME = game;
     window.FSM = fsm;
 }
