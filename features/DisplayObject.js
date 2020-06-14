@@ -14,19 +14,18 @@ Object.defineProperties(DisplayObject.prototype, {
         }
     },
     "getChildByName": {
-        value(name, isRecursive = true, parent = this) {
-            const findChild = (name, { children }) => {
+        value(name, isRecursive = true) {
+            const findChild = (name, children) => {
                 return children.find((child) => child.name === name);
             };
 
-            let found = findChild(name, parent);
-            const { length } = parent.children;
+            let found = findChild(name, this.children);
 
-            for (let i = 0; ((i < length) && !found && isRecursive); i += 1) {
-                const child = parent.children[i];
-                if (child) {
-                    found = parent.getChildByName(name, isRecursive, child);
-                }
+            if (!found && isRecursive) {
+                found = this.children.reduce((_, child) => {
+                    const result = child.getChildByName(name, isRecursive);
+                    if(result) return result;
+                }, undefined);
             }
 
             return found;
