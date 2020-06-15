@@ -32,9 +32,11 @@ export class Game {
 
     init() {
         this.storage.isMobile = this.defineDevice();
+        
+        this.config.container = document.body.querySelector(this.config.containerId) || document.body;
 
-        this.app.stage.addChild(this.scene.view);
-        document.body.appendChild(this.app.view);
+        this.app.stage.addChild(this.scene.view);        
+        this.config.container.appendChild(this.app.view);
     }
 
     initCamera() {

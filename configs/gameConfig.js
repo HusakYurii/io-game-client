@@ -1,5 +1,7 @@
 export const gameConfig = {
     isDevMode: true,
+    containerId: '#game',
+    container: {},
     application: {
         autoDensity: true,
         backgroundColor: "0x010D21",

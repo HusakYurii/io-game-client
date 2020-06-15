@@ -1,49 +1,53 @@
 import { AbstractLayer } from "./AbstractLayer.js";
 import { Builder } from "../../libs/Builder.js";
+import { DOMBuilder } from "../../libs/DOMBuilder.js";
 
 export class UILayer extends AbstractLayer {
     constructor(config) {
         super(config);
-        this.inputs = {};
-        this.confirmBtn = null;
-        this.onPlayerInput = this.onPlayerInput.bind(this);
+
+        this.domContainer = null;
     }
 
     createLoginPopup(callback) {
-        const popup = Builder.fromConfig(this.config.loginPopupTree);
-        this.addChild(...popup);
+        const loginPopup = DOMBuilder.render(this.config.loginPopup);
+        this.domContainer = document.body.querySelector('#game') || document.body;
+        this.domContainer.appendChild.apply(this.domContainer, loginPopup);
 
-        this.inputs.nameInput = this.getChildByName("nameInput");
-        this.inputs.nameInput.on("input", this.onPlayerInput);
+        const form = this.domContainer.querySelector("#loginPopup > form");
+        const input = this.domContainer.querySelector("#inputName");
 
-        this.confirmBtn = this.getChildByName("button");
-        this.confirmBtn.once("pointerdown", (event) => {
-            this.disableInputs();
+        input.oninput = (event) => {
+            const button = this.domContainer.querySelector("#loginButton");
 
-            callback({
-                name: this.inputs.nameInput.htmlInput.value,
-                roomId: ""
-            });
-        });
+            const onSubmit = (event) => {
+                event.preventDefault();
+                callback({
+                    name: input.value,
+                    roomId: ""
+                });
+            };
+
+            if (input.value.length > 3 && (/[a-zA-z]/g).test(input.value)) {
+                button.setAttribute("class", "");
+                form.onsubmit = onSubmit;
+            }
+            else {
+                if (button.getAttribute("class") !== "disabled") {
+                    button.setAttribute("class", "disabled");
+                }
+                form.onsubmit = null
+            }
+        };
     }
 
     removeLoginPopup() {
-        this.inputs.nameInput.off("input", this.onPlayerInput);
-        this.inputs.nameInput.destroy();
-        this.inputs = {};
-        this.confirmBtn = null;
-        this.removeChildren();
-    }
-
-    onPlayerInput(value) {
-        const [alpha, enable] = (value.length >= 3) ? [1, true] : [0.7, false];
-        this.confirmBtn.alpha = alpha;
-        this.confirmBtn.interactive = enable;
-    }
-
-    disableInputs() {
-        this.confirmBtn.interactive = false;
-        this.inputs.nameInput.disabled = true;
+        const loginPopup = this.domContainer.querySelector("#loginPopup")
+        const form = this.domContainer.querySelector("#loginPopup > form");
+        const input = this.domContainer.querySelector("#inputName");
+        form.onsubmit = null;
+        input.oninput = null;
+        this.domContainer.removeChild(loginPopup);
     }
 
     createConnectionLostPopup(callback) {
