@@ -33,7 +33,6 @@
     "@pixi/ticker": "^5.2.1",
     "@pixi/utils": "^5.2.1",
     "@tweenjs/tween.js": "^18.5.0",
-    "pixi-text-input": "^1.0.5",
     "socket.io-client": "^2.3.0"
   }
 }

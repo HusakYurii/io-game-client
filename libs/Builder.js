@@ -1,4 +1,4 @@
-import { Container, Sprite, Text, TextStyle, Rectangle, TilingSprite, TextInput, Graphics } from "./PixiCustomized.js";
+import { Container, Sprite, Text, TextStyle, Rectangle, TilingSprite, Graphics } from "./PixiCustomized.js";
 export class Builder {
 
     /**
@@ -65,18 +65,6 @@ export class Builder {
     }
 
     /**
-     * @static
-     * @param {{input: object; box: object, modifiers: object; name: string;}} param0 
-     * @returns {TextInput}
-     */
-    static createTextInput({ input = {}, box = {}, modifiers = {}, name } = {}) {
-        const textInput = new Builder.TextInput({ input, box });
-        this._useModifiers(textInput, modifiers);
-        textInput.name = name;
-        return textInput;
-    }
-
-    /**
      * @private
      * @static
      * @param {DisplayObject} target 
@@ -114,10 +102,6 @@ export class Builder {
         return Sprite;
     }
 
-    static get TextInput() {
-        return TextInput;
-    }
-
     static get TextStyle() {
         return TextStyle;
     }
@@ -140,7 +124,6 @@ export class Builder {
 }
 
 Builder.methodsMap = {
-    "TextInput": "createTextInput",
     "Container": "createContainer",
     "Sprite": "createSprite",
     "Text": "createText"
@@ -151,7 +134,5 @@ Builder.modifiersList = [
     "position", "scale", "width", "height",
     "alpha", "zIndex", "rotation",
     // for Sprite 
-    "anchor",
-    // for TextInput
-    "placeholder", "restrict", "maxLength"
+    "anchor"
 ]
