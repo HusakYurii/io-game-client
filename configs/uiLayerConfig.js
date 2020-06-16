@@ -1,87 +1,49 @@
 export const uiLayerConfig = {
     layerName: "UILayer",
     layerIndex: 3,
-    gameOverPopupTree: [{
-        type: "Container",
-        name: "gameOverPopup",
+    gameOverPopup: [{
+        type: "div",
+        attrebutes: [{ name: "id", value: "gameOverPopup" }],
         children: [{
-            type: "Sprite",
-            name: "background",
-            pictureName: "loginFormBackground",
-            modifiers: {
-                anchor: { x: 0.5, y: 0.5 },
-                width: 600
-            }
-        },
-        {
-            type: "Container",
-            name: "restartButton",
-            modifiers: {
-                position: { x: 0, y: 120 }
-            },
+            type: "div",
             children: [{
-                type: "Sprite",
-                name: "buttonBg",
-                pictureName: "loginFormButton",
-                modifiers: {
-                    scale: { x: 2, y: 1.5 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
+                type: "h3",
+                text: "Game Over!"
             },
             {
-                type: "Text",
-                name: "buttonText",
-                text: "Continue Game!",
-                style: {
-                    fill: "#fff2f2",
-                    fontSize: 80
-                },
-                modifiers: {
-                    scale: { x: 0.5, y: 0.5 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
+                type: "p",
+                text: "Get back and kill all!"
+            },
+            {
+                type: "input",
+                attrebutes: [
+                    { name: "id", value: "restartButton" },
+                    { name: "type", value: "button" },
+                    { name: "value", value: "Restart Game" }
+                ]
             }]
         }]
     }],
-    connectionLostPopupTree: [{
-        type: "Container",
-        name: "connectionLostPopup",
+    connectionLostPopup: [{
+        type: "div",
+        attrebutes: [{ name: "id", value: "connectionLostPopup" }],
         children: [{
-            type: "Sprite",
-            name: "background",
-            pictureName: "loginFormBackground",
-            modifiers: {
-                anchor: { x: 0.5, y: 0.5 },
-                width: 600
-            }
-        },
-        {
-            type: "Container",
-            name: "reconnectButton",
-            modifiers: {
-                position: { x: 0, y: 120 }
-            },
+            type: "div",
             children: [{
-                type: "Sprite",
-                name: "buttonBg",
-                pictureName: "loginFormButton",
-                modifiers: {
-                    scale: { x: 2, y: 1.5 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
+                type: "h3",
+                text: "Connection Lost!"
             },
             {
-                type: "Text",
-                name: "buttonText",
-                text: "Restart Game!",
-                style: {
-                    fill: "#fff2f2",
-                    fontSize: 80
-                },
-                modifiers: {
-                    scale: { x: 0.5, y: 0.5 },
-                    anchor: { x: 0.5, y: 0.5 }
-                }
+                type: "p",
+                text: "Seems that connection lost! Get back and kill all!"
+            },
+            {
+                type: "input",
+                attrebutes: [
+                    { name: "id", value: "reconnectButton" },
+                    { name: "type", value: "button" },
+                    { name: "value", value: "Reconnect" }
+                ]
             }]
         }]
     }],
@@ -89,7 +51,7 @@ export const uiLayerConfig = {
         type: "div",
         attrebutes: [{ name: "id", value: "loginPopup" }],
         children: [{
-            type: "form",
+            type: "div",
             children: [{
                 type: "h3",
                 text: "Gravity io"
@@ -109,11 +71,10 @@ export const uiLayerConfig = {
                 attrebutes: [
                     { name: "id", value: "loginButton" },
                     { name: "class", value: "disabled" },
-                    { name: "type", value: "submit" },
+                    { name: "type", value: "button" },
                     { name: "value", value: "Send" }
                 ]
-            }
-            ]
+            }]
         }]
     }]
 };
