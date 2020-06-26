@@ -3,16 +3,16 @@ export const controlLayerConfig = {
     layerIndex: 2,
     joystick: [{
         type: "Sprite",
-        name: "joystick",
-        pictureName: "joystick",
+        name: "joystickBg",
+        pictureName: "joystickBg",
         modifiers: {
             anchor: { x: 0.5, y: 0.5 }
         },
         children: [
             {
                 type: "Sprite",
-                name: "pointer",
-                pictureName: "pointer",
+                name: "joystickPointer",
+                pictureName: "joystickPointer",
                 modifiers: {
                     anchor: { x: 0.5, y: 0.5 },
                     scale: { x: 1.5, y: 1.5}
